@@ -1,0 +1,127 @@
+fileFormatVersion: 2
+guid: cbb4183dfb6c1e746b911f843cbcba66
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: bump_front
+    100002: bump_rear
+    100004: //RootNode
+    100006: diffuse
+    100008: misc_a
+    100010: misc_b
+    100012: misc_c
+    100014: misc_d
+    100016: steering
+    100018: Suspension
+    100020: wheel_fl
+    100022: wheel_fr
+    100024: wheel_rl
+    100026: wheel_rr
+    400000: bump_front
+    400002: bump_rear
+    400004: //RootNode
+    400006: diffuse
+    400008: misc_a
+    400010: misc_b
+    400012: misc_c
+    400014: misc_d
+    400016: steering
+    400018: Suspension
+    400020: wheel_fl
+    400022: wheel_fr
+    400024: wheel_rl
+    400026: wheel_rr
+    2300000: bump_front
+    2300002: bump_rear
+    2300004: diffuse
+    2300006: misc_a
+    2300008: misc_b
+    2300010: misc_c
+    2300012: misc_d
+    2300014: steering
+    2300016: Suspension
+    2300018: wheel_fl
+    2300020: wheel_fr
+    2300022: wheel_rl
+    2300024: wheel_rr
+    3300000: bump_front
+    3300002: bump_rear
+    3300004: diffuse
+    3300006: misc_a
+    3300008: misc_b
+    3300010: misc_c
+    3300012: misc_d
+    3300014: steering
+    3300016: Suspension
+    3300018: wheel_fl
+    3300020: wheel_fr
+    3300022: wheel_rl
+    3300024: wheel_rr
+    4300000: bump_front
+    4300002: bump_rear
+    4300004: diffuse
+    4300006: misc_a
+    4300008: misc_b
+    4300010: misc_c
+    4300012: misc_d
+    4300014: steering
+    4300016: Suspension
+    4300018: wheel_fl
+    4300020: wheel_fr
+    4300022: wheel_rl
+    4300024: wheel_rr
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 1
+  userData: 
