@@ -3,6 +3,8 @@ using System.Collections;
 
 // This class is repsonsible for controlling inputs to the car.
 // Change this code to implement other input types, such as support for analogue input, or AI cars.
+// 这个类主要负责车辆的输入控制
+// 更改此代码来实现其他输入类型，如模拟输入或人工智能汽车的支持。
 [RequireComponent (typeof (Drivetrain))]
 public class CarController : MonoBehaviour {
 
@@ -13,12 +15,18 @@ public class CarController : MonoBehaviour {
 	// Cars with a higher CoG tend to tilt more in corners.
 	// The further the CoG is towards the rear of the car, the more the car tends to oversteer. 
 	// If this is not set, the center of mass is calculated from the colliders.
+    // 指定汽车的重心
+    // 如果没有指定的话,车辆重心将由碰撞体的质心来计算
 	public Transform centerOfMass;
 
 	// A factor applied to the car's inertia tensor. 
 	// Unity calculates the inertia tensor based on the car's collider shape.
 	// This factor lets you scale the tensor, in order to make the car more or less dynamic.
 	// A higher inertia makes the car change direction slower, which can make it easier to respond to.
+    // 适用于车辆惯性张量的因子
+    // unity使用车辆碰撞体计算惯性张量
+    // 这个因子用于缩放惯性张量,可以让车辆有更多/更少的动态性
+    // 惯性张量越大,车辆转向越慢,反之则越快
 	public float inertiaFactor = 1.5f;
 
 	// current input state
@@ -74,8 +82,10 @@ public class CarController : MonoBehaviour {
 	public float steerCorrectionFactor = 4.0f;
 
 	// Used by SoundController to get average slip velo of all wheels for skid sounds.
-	public float slipVelo {
-		get {
+	public float slipVelo 
+    {
+		get 
+        {
 			float val = 0.0f;
 			foreach(Wheel w in wheels)
 				val += w.slipVelo / wheels.Length;
@@ -110,21 +120,20 @@ public class CarController : MonoBehaviour {
 		if (Input.GetKey (KeyCode.RightArrow))
 			steerInput = 1;
 
+        // 车轮左转
 		if (steerInput < steering)
 		{
-            //float steerSpeed = (steering>0)?(1/(steerReleaseTime+veloSteerReleaseTime*fVelo)) :(1/(steerTime+veloSteerTime*fVelo));
-            float steerSpeed = (steering > 0) ? (1 / (steerReleaseTime)) : (1 / (steerTime));
-			
+			float steerSpeed = (steering>0)?(1/(steerReleaseTime+veloSteerReleaseTime*fVelo)) :(1/(steerTime+veloSteerTime*fVelo));
 			if (steering > optimalSteering)
 				steerSpeed *= 1 + (steering-optimalSteering) * steerCorrectionFactor;
 			steering -= steerSpeed * Time.deltaTime;
 			if (steerInput > steering)
 				steering = steerInput;
 		}
+        // 车轮右转
 		else if (steerInput > steering)
 		{
-            //float steerSpeed = (steering<0)?(1/(steerReleaseTime+veloSteerReleaseTime*fVelo)) :(1/(steerTime+veloSteerTime*fVelo));
-            float steerSpeed = (steering < 0) ? (1 / (steerReleaseTime)) : (1 / (steerTime));
+			float steerSpeed = (steering<0)?(1/(steerReleaseTime+veloSteerReleaseTime*fVelo)) :(1/(steerTime+veloSteerTime*fVelo));
 			if (steering < optimalSteering)
 				steerSpeed *= 1 + (optimalSteering-steering) * steerCorrectionFactor;
 			steering += steerSpeed * Time.deltaTime;
@@ -136,19 +145,19 @@ public class CarController : MonoBehaviour {
 
 		bool accelKey = Input.GetKey (KeyCode.UpArrow);
 		bool brakeKey = Input.GetKey (KeyCode.DownArrow);
-
-        if (drivetrain.automatic && drivetrain.gear == 0)
-        {
-            accelKey = Input.GetKey(KeyCode.DownArrow);
-            brakeKey = Input.GetKey(KeyCode.UpArrow);
-        }
-
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            throttle += Time.deltaTime / throttleTime;
-            throttleInput += Time.deltaTime / throttleTime;
-        }
-        else if (accelKey)
+		
+		if (drivetrain.automatic && drivetrain.gear == 0)
+		{
+			accelKey = Input.GetKey (KeyCode.DownArrow);
+			brakeKey = Input.GetKey (KeyCode.UpArrow);
+		}
+		
+		if (Input.GetKey (KeyCode.LeftShift))
+		{
+			throttle += Time.deltaTime / throttleTime;
+			throttleInput += Time.deltaTime / throttleTime;
+		}
+		else if (accelKey)
 		{
 			if (drivetrain.slipRatio < 0.10f)
 				throttle += Time.deltaTime / throttleTime;

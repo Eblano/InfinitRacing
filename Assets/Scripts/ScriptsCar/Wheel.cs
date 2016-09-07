@@ -3,7 +3,8 @@ using System.Collections;
 
 // This class simulates a single car's wheel with tire, brake and simple
 // suspension (basically just a single, independant spring and damper).
-public class Wheel : MonoBehaviour {
+public class Wheel : MonoBehaviour 
+{
 
 	// Wheel Specifications
 	
@@ -78,6 +79,7 @@ public class Wheel : MonoBehaviour {
 	float oldAngle;	
 	Skidmarks skid;
 	
+    // 计算纵向力
 	float CalcLongitudinalForce(float Fz,float slip)
 	{
 		Fz*=0.001f;//convert to kN
@@ -91,6 +93,7 @@ public class Wheel : MonoBehaviour {
 		return Fx;
 	}
 	
+    // 计算侧向力
 	float CalcLateralForce(float Fz,float slipAngle)
 	{
 		Fz*=0.001f;//convert to kN
@@ -216,7 +219,8 @@ public class Wheel : MonoBehaviour {
 		return -Mathf.Asin(sinSlipAngle) * damping * damping;
 	}
 	
-	Vector3 RoadForce () {
+	Vector3 RoadForce () 
+    {
 		int slipRes=(int)((100.0f-Mathf.Abs(angularVelocity))/(10.0f));
 		if (slipRes < 1)
 			slipRes = 1;
@@ -260,7 +264,8 @@ public class Wheel : MonoBehaviour {
 		return totalForce;
 	}
 	
-	void FixedUpdate () {
+	void FixedUpdate () 
+    {
 
 		Vector3 pos = transform.position;
 		up = transform.up;
