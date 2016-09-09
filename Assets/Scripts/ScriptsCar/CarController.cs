@@ -157,7 +157,7 @@ public class CarController : MonoBehaviour {
 			throttle += Time.deltaTime / throttleTime;
 			throttleInput += Time.deltaTime / throttleTime;
 		}
-		else if (accelKey)
+        else if (accelKey)
 		{
 			if (drivetrain.slipRatio < 0.10f)
 				throttle += Time.deltaTime / throttleTime;

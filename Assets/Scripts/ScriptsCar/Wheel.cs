@@ -9,27 +9,37 @@ public class Wheel : MonoBehaviour
 	// Wheel Specifications
 	
 	// Wheel radius in meters
+    // 车轮半径
 	public float radius = 0.34f;
 	// Wheel suspension travel in meters
+    // 悬挂压缩或者延展的距离(米)
 	public float suspensionTravel = 0.2f;
 	// Damper strength in kg/s
+    // 阻尼力(千克/秒)
 	public float damping = 5000;
 	// Wheel angular inertia in kg * m^2
+    // 车轮角转动惯量(千克 * 米^2)
 	public float inertia = 2.2f;
 	// Coeefficient of grip - this is simly multiplied to the resulting forces, 
 	// so it is not quite realitic, but an easy way to quickly change handling characteritics
+    // 轮胎抓地力?
 	public float grip = 1.0f;
 	// Maximal braking torque (in Nm)
+    // 最大的脚刹制动力矩
 	public float brakeFrictionTorque = 4000;
+    // 最大的手刹制动力矩
 	// Maximal handbrake torque (in Nm)
 	public float handbrakeFrictionTorque = 0;
 	// Base friction torque (in Nm)
+    // 基础摩擦力矩
 	public float frictionTorque = 10;
 	// Maximal steering angle (in degrees)
+    // 最大的转向角度
 	public float maxSteeringAngle = 28f;
 	// Graphical wheel representation (to be rotated accordingly)
 	public GameObject model;
 	// Fraction of the car's mass carried by this wheel
+    // 轮子占整车质量的比重
 	public float massFraction = 0.25f;
 	// Pacejka coefficients
 	public float[] a={1.0f,-60f,1688f,4140f,6.026f,0f,-0.3589f,1f,0f,-6.111f/1000f,-3.244f/100f,0f,0f,0f,0f};
@@ -37,24 +47,35 @@ public class Wheel : MonoBehaviour
 
 	// inputs
 	// engine torque applied to this wheel
+    // 作用到这个车轮上的发动机扭矩
 	public float driveTorque = 0;
 	// engine braking and other drivetrain friction torques applied to this wheel
+    // 作用到这个车轮上的刹车力矩以及传动摩擦力矩
 	public float driveFrictionTorque = 0;
 	// brake input
+    // 脚刹的输入值
 	public float brake = 0;
+    // 手刹的输入值
 	// handbrake input
 	public float handbrake = 0;
 	// steering input
+    // 转向输入值
 	public float steering = 0;
 	// drivetrain inertia as currently connected to this wheel
+    // 连接到这个车轮的传动惯量
 	public float drivetrainInertia = 0;
 	// suspension force externally applied (by anti-roll bars)
+    // 外部施加的悬挂力(譬如防倾杆)
 	public float suspensionForceInput = 0;
 	
 	// output
+    // 角速度
 	public float angularVelocity;
+    // 滑移率
 	public float slipRatio;
+    // 滑移角
 	public float slipVelo;
+    // 压力
 	public float compression;
 	
 	// state
@@ -108,21 +129,25 @@ public class Wheel : MonoBehaviour
 		return Fy;
 	}
 	
+    // 计算当前的纵向力
 	float CalcLongitudinalForceUnit(float Fz,float slip)
 	{
 		return CalcLongitudinalForce(Fz,slip*maxSlip);
 	}
 	
+    // 计算当前的侧向力
 	float CalcLateralForceUnit(float Fz,float slipAngle)
 	{
 		return CalcLongitudinalForce(Fz,slipAngle*maxAngle);
 	}
 
+    // 计算滑移的合力
 	Vector3 CombinedForce(float Fz,float slip,float slipAngle)
 	{
 		float unitSlip = slip/maxSlip;
 		float unitAngle = slipAngle/maxAngle;
 		float p = Mathf.Sqrt(unitSlip*unitSlip + unitAngle*unitAngle);
+        // 是否有滑移
 		if(p > Mathf.Epsilon)
 		{
 			if (slip < -0.8f)
@@ -142,30 +167,43 @@ public class Wheel : MonoBehaviour
 		const float stepSize = 0.001f;
 		const float testNormalForce = 4000f;
 		float force = 0;
+        // 步进计算最大的滑移值
 		for (float slip = stepSize;;slip += stepSize)
 		{
+            // 计算纵向力
 			float newForce = CalcLongitudinalForce(testNormalForce,slip);
-			if (force<newForce)
-				force = newForce;
-			else {
-				maxSlip = slip-stepSize;
-				break;
-			}
+            if (force < newForce)
+            {
+                Debug.Log("[slip : " + slip + "] [force : " + newForce + "]");
+                force = newForce;
+            }
+            else
+            {
+                maxSlip = slip - stepSize;
+                break;
+            }
 		}
 		force = 0;
+        // 步进计算最大的滑移角
 		for (float slipAngle = stepSize;;slipAngle += stepSize)
 		{
+            // 计算侧向力
 			float newForce = CalcLateralForce(testNormalForce,slipAngle);
-			if (force<newForce)
-				force = newForce;
-			else {
-				maxAngle = slipAngle-stepSize;
-				break;
-			}
+            if (force < newForce)
+            {
+                Debug.Log("[slipAngle : " + slipAngle + "] [force : " + newForce + "]");
+                force = newForce;
+            }
+            else
+            {
+                maxAngle = slipAngle - stepSize;
+                break;
+            }
 		}
 	}
 	
-	void Start () {
+	void Start () 
+    {
 		Transform trs = transform;
 		while (trs != null && trs.rigidbody == null)
 			trs = trs.parent;
@@ -174,33 +212,43 @@ public class Wheel : MonoBehaviour
 
 		InitSlipMaxima ();
 		skid = FindObjectOfType(typeof(Skidmarks)) as Skidmarks;
+        // 悬挂弹簧最大的压缩力
 		fullCompressionSpringForce = body.mass * massFraction * 2.0f * -Physics.gravity.y;
 	}
 	
-	Vector3 SuspensionForce () {
+    // 计算悬挂力
+	Vector3 SuspensionForce () 
+    {
+        // 计算当前的弹簧压力
 		float springForce = compression * fullCompressionSpringForce;
 		normalForce = springForce;
-		
+		// 计算阻尼力
 		float damperForce = Vector3.Dot(localVelo, groundNormal) * damping;
 
 		return (springForce - damperForce + suspensionForceInput) * up;
 	}
-	
+
+    // 计算滑移率
 	float SlipRatio ()
 	{
 		const float fullSlipVelo = 4.0f;
 
+        // 计算车轮相对于路面的速率
 		float wheelRoadVelo = Vector3.Dot (wheelVelo, forward);
 		if (wheelRoadVelo == 0)
 			return 0;
 		
 		float absRoadVelo = Mathf.Abs (wheelRoadVelo);
+        // 计算滑移衰减
 		float damping = Mathf.Clamp01( absRoadVelo / fullSlipVelo );
 		
+        // 计算轮胎的速率
 		float wheelTireVelo = angularVelocity * radius;
+        // 滑移率
 		return (wheelTireVelo - wheelRoadVelo) / absRoadVelo * damping;
 	}
 
+    // 计算滑移角
 	float SlipAngle ()
 	{
 		const float fullAngleVelo = 2.0f;
@@ -221,11 +269,22 @@ public class Wheel : MonoBehaviour
 	
 	Vector3 RoadForce () 
     {
+        //           slipRes
+        //            |
+        //            @ <----- 10
+        //          @ | @
+        //        @   |   @
+        // @@@@@@     |     @@@@@@@
+        //            |
+        //------#-----------#--------------- angularVelocity
+        //   -100     |     100
+
 		int slipRes=(int)((100.0f-Mathf.Abs(angularVelocity))/(10.0f));
 		if (slipRes < 1)
 			slipRes = 1;
 		float invSlipRes = (1.0f/(float)slipRes);
 		
+        // 计算总惯性
 		float totalInertia = inertia + drivetrainInertia;
 		float driveAngularDelta = driveTorque * Time.deltaTime * invSlipRes / totalInertia;
 		float totalFrictionTorque = brakeFrictionTorque * brake + handbrakeFrictionTorque * handbrake + frictionTorque + driveFrictionTorque;
@@ -241,7 +300,9 @@ public class Wheel : MonoBehaviour
 			forward = transform.TransformDirection (localRotation * Vector3.forward);
 			right = transform.TransformDirection (localRotation * Vector3.right);
 			
+            // 计算当前步进转向角下的滑移率
 			slipRatio = SlipRatio ();
+            // 计算当前步进转向角下的滑移角
 			slipAngle = SlipAngle ();
 			Vector3 force = invSlipRes * grip * CombinedForce (normalForce, slipRatio, slipAngle);
 			Vector3 worldForce = transform.TransformDirection (localRotation * force);
@@ -256,10 +317,14 @@ public class Wheel : MonoBehaviour
 			totalForce += worldForce;
 		}
 
+        // 计算纵向滑移速率
 		float longitunalSlipVelo = Mathf.Abs(angularVelocity * radius - Vector3.Dot (wheelVelo, forward));	
+        // 计算侧向滑移速率
 		float lateralSlipVelo = Vector3.Dot (wheelVelo, right);
+        // 合成滑移速率
 		slipVelo = Mathf.Sqrt(longitunalSlipVelo * longitunalSlipVelo + lateralSlipVelo * lateralSlipVelo);
 		
+        // 记录轮胎的转向角
 		oldAngle = newAngle;
 		return totalForce;
 	}
@@ -270,11 +335,14 @@ public class Wheel : MonoBehaviour
 		Vector3 pos = transform.position;
 		up = transform.up;
 		RaycastHit hit;
+        // 检查车辆是否触地
 		bool onGround = Physics.Raycast( pos, -up, out hit, suspensionTravel + radius);
 		
+        // 如果车子在一个触发器之上或者里面
 		if (onGround && hit.collider.isTrigger)
 		{
-			onGround = false;float dist = suspensionTravel + radius;
+			onGround = false;
+            float dist = suspensionTravel + radius;
 			RaycastHit[] hits = Physics.RaycastAll( pos, -up, suspensionTravel + radius);
 			foreach(RaycastHit test in hits)
 			{

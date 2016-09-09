@@ -127,24 +127,31 @@ public class Drivetrain : MonoBehaviour {
 	
 	void FixedUpdate () 
 	{
+        // 计算最终的传动齿轮比
 		float ratio = gearRatios[gear] * finalDriveRatio;
+        // 计算发动机惯量
 		float inertia = engineInertia * Sqr(ratio);
+        // 计算发动机总摩擦力矩
 		float engineFrictionTorque = engineBaseFriction + rpm * engineRPMFriction;
+        // 计算发动机扭矩
 		float engineTorque = (CalcEngineTorque() + Mathf.Abs(engineFrictionTorque)) * throttle;
 		slipRatio = 0.0f;		
 		
+        // 空挡的情况下
 		if (ratio == 0)
 		{
 			// Neutral gear - just rev up engine
-            // 中性齿轮,刚刚发动发动机
+            // 计算发动机角加速度
 			float engineAngularAcceleration = (engineTorque-engineFrictionTorque) / engineInertia;
+            // 计算发动机当前角速度
 			engineAngularVelo += engineAngularAcceleration * Time.deltaTime;
 			
-			// Apply torque to car body
-			rigidbody.AddTorque(-engineOrientation * engineTorque);
+            //// Apply torque to car body
+            //rigidbody.AddTorque(-engineOrientation * engineTorque);
 		}
 		else
 		{
+            // 计算车轮平均角速度
 			float drivetrainFraction = 1.0f/poweredWheels.Length;
 			float averageAngularVelo = 0;	
 			foreach(Wheel w in poweredWheels)
@@ -162,11 +169,13 @@ public class Drivetrain : MonoBehaviour {
 			}
 			
 			// update engine angular velo
+            // 发动机的角速度 = 车轮平均角速度 * 最终的传动齿轮比
 			engineAngularVelo = averageAngularVelo * ratio;
 		}
 		
 		// update state
 		slipRatio *= Mathf.Sign ( ratio );
+        // 根据发动机的角速度换算成发动机的转速(转/分)
 		rpm = engineAngularVelo * (60.0f/(2*Mathf.PI));
 		
 		// very simple simulation of clutch - just pretend we are at a higher rpm.
@@ -179,7 +188,14 @@ public class Drivetrain : MonoBehaviour {
 		// Automatic gear shifting. Bases shift points on throttle input and rpm.
 		if (automatic)
 		{
-			if (rpm >= maxRPM * (0.5f + 0.5f * throttleInput))
+            if (gear == 1)
+            {
+                if (throttleInput > 0.0f)
+                    gear = 2;
+                else if (throttleInput < 0.0f)
+                    gear = 0;
+            }
+			else if (rpm >= maxRPM * (0.5f + 0.5f * throttleInput))
 				ShiftUp ();
 			else if (rpm <= maxRPM * (0.25f + 0.4f * throttleInput) && gear > 2)
 				ShiftDown ();
