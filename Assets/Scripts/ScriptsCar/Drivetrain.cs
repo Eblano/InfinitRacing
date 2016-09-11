@@ -6,7 +6,8 @@ using System.Collections;
 // This class simulates a car's engine and drivetrain, generating
 // torque, and applying the torque to the wheels.
 // 这个类主要是模拟车辆发动机以及传动装置,生成扭矩并作用到车轮上
-public class Drivetrain : MonoBehaviour {
+public class Drivetrain : MonoBehaviour 
+{
 	
 	// All the wheels the drivetrain should power
 	public Wheel[] poweredWheels;
@@ -14,6 +15,8 @@ public class Drivetrain : MonoBehaviour {
 	// The gear ratios, including neutral (0) and reverse (negative) gears
     // 齿轮比，包括中性（0）和反向（负）齿轮
 	public float[] gearRatios;
+
+    public float[] gearSpeeds;
 	
 	// The final drive ratio, which is multiplied to each gear ratio
     // 最后的传动比，这是乘以每个齿轮比
@@ -127,6 +130,10 @@ public class Drivetrain : MonoBehaviour {
 	
 	void FixedUpdate () 
 	{
+        if (gearSpeeds == null)
+        {
+            gearSpeeds = new float[gearRatios.Length];
+        }
         // 计算最终的传动齿轮比
 		float ratio = gearRatios[gear] * finalDriveRatio;
         // 计算发动机惯量
@@ -145,9 +152,9 @@ public class Drivetrain : MonoBehaviour {
 			float engineAngularAcceleration = (engineTorque-engineFrictionTorque) / engineInertia;
             // 计算发动机当前角速度
 			engineAngularVelo += engineAngularAcceleration * Time.deltaTime;
-			
-            //// Apply torque to car body
-            //rigidbody.AddTorque(-engineOrientation * engineTorque);
+
+            // Apply torque to car body
+            rigidbody.AddTorque(-engineOrientation * engineTorque);
 		}
 		else
 		{
@@ -188,28 +195,32 @@ public class Drivetrain : MonoBehaviour {
 		// Automatic gear shifting. Bases shift points on throttle input and rpm.
 		if (automatic)
 		{
-            if (gear == 1)
+            const float C_SPEED_GAP = 5.0f;
+            float curSpeed = rigidbody.velocity.magnitude * 3.6f;
+            if (gear >= 2 && gear <= gearRatios.Length-1)
             {
-                if (throttleInput > 0.0f)
-                    gear = 2;
-                else if (throttleInput < 0.0f)
-                    gear = 0;
+                if (curSpeed >= gearSpeeds[gear] - C_SPEED_GAP && throttleInput > 0.0f && gear < gearRatios.Length - 1)
+                    ShiftUp();
+                else if (curSpeed <= gearSpeeds[gear - 1] + C_SPEED_GAP && gear > 2)
+                    ShiftDown();
             }
-			else if (rpm >= maxRPM * (0.5f + 0.5f * throttleInput))
-				ShiftUp ();
-			else if (rpm <= maxRPM * (0.25f + 0.4f * throttleInput) && gear > 2)
-				ShiftDown ();
-			if (throttleInput < 0 && rpm <= minRPM)
-				gear = (gear == 0?2:0);
+            //if (rpm >= maxRPM * (0.5f + 0.5f * throttleInput))
+            //    ShiftUp ();
+            //else if (rpm <= maxRPM * (0.25f + 0.4f * throttleInput) && gear > 2)
+            //    ShiftDown ();
+            if (throttleInput < 0 && rpm <= minRPM)
+                gear = (gear == 0?2:0);
 		}
 	}
 		
-	public void ShiftUp () {
+	public void ShiftUp () 
+    {
 		if (gear < gearRatios.Length - 1)
 			gear ++;
 	}
 
-	public void ShiftDown () {
+	public void ShiftDown () 
+    {
 		if (gear > 0)
 			gear --;
 	}

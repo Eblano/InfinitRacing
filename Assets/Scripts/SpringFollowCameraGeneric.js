@@ -1,5 +1,9 @@
 // This camera is similar to the one used in Jak & Dexter
 
+var seatCamera : Camera;
+var thirdCamera : Camera;
+var useThirdCamera = true;
+
 var target : Transform;
 var distance = 4.0;
 var height = 1.0;
@@ -14,6 +18,13 @@ var centerOffset = Vector3.zero;
 private var isSnapping = false;
 private var velocity = Vector3.zero;
 private var targetHeight = 100000.0;
+
+function ToggleCamera()
+{
+    useThirdCamera = !useThirdCamera;
+    seatCamera.depth = useThirdCamera ? -1 : 0;
+    thirdCamera.depth = useThirdCamera ? 0 : -1;
+}
 
 function Apply (dummyTarget : Transform, dummyCenter : Vector3)
 {	
@@ -44,14 +55,14 @@ function Apply (dummyTarget : Transform, dummyCenter : Vector3)
 		isSnapping = true;
 	}
 
-	if (isSnapping)
+//	if (isSnapping)
 	{
 		ApplySnapping (targetCenter);
 	}
-	else
-	{
-		ApplyPositionDamping (Vector3(targetCenter.x, targetHeight, targetCenter.z));
-	}
+//	else
+//	{
+//		ApplyPositionDamping (Vector3(targetCenter.x, targetHeight, targetCenter.z));
+//	}
 	
 	SetUpRotation(targetCenter, targetHead);
 }
@@ -76,6 +87,12 @@ function ApplySnapping (targetCenter : Vector3)
 	currentAngle = Mathf.SmoothDampAngle(currentAngle, targetAngle, velocity.x, snapLag);
 	currentDistance = Mathf.SmoothDamp(currentDistance, distance, velocity.z, snapLag);
 
+    var gap = 1.0;
+    if( currentDistance > distance + gap )
+        currentDistance = distance + gap;
+    else if( currentDistance < distance - gap )
+        currentDistance = distance - gap;
+
 	var newPosition = targetCenter;
 	newPosition += Quaternion.Euler(0, currentAngle, 0) * Vector3.back * currentDistance;
 
@@ -85,12 +102,12 @@ function ApplySnapping (targetCenter : Vector3)
 	
 	transform.position = newPosition;
 	
-	// We are close to the target, so we can stop snapping now!
-	if (AngleDistance (currentAngle, targetAngle) < 3.0)
-	{
-		isSnapping = false;
-		velocity = Vector3.zero;
-	}
+//	// We are close to the target, so we can stop snapping now!
+//	if (AngleDistance (currentAngle, targetAngle) < 3.0)
+//	{
+//		isSnapping = false;
+//		velocity = Vector3.zero;
+//	}
 }
 
 function AdjustLineOfSight (newPosition : Vector3, target : Vector3)

@@ -174,7 +174,7 @@ public class Wheel : MonoBehaviour
 			float newForce = CalcLongitudinalForce(testNormalForce,slip);
             if (force < newForce)
             {
-                Debug.Log("[slip : " + slip + "] [force : " + newForce + "]");
+                //Debug.Log("[slip : " + slip + "] [force : " + newForce + "]");
                 force = newForce;
             }
             else
@@ -191,7 +191,7 @@ public class Wheel : MonoBehaviour
 			float newForce = CalcLateralForce(testNormalForce,slipAngle);
             if (force < newForce)
             {
-                Debug.Log("[slipAngle : " + slipAngle + "] [force : " + newForce + "]");
+                //Debug.Log("[slipAngle : " + slipAngle + "] [force : " + newForce + "]");
                 force = newForce;
             }
             else
