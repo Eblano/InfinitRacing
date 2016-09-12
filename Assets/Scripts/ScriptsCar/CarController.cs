@@ -261,6 +261,5 @@ public class CarController : MonoBehaviour
                 carCamCtrl.ApplyCameraSetting();
             }
         }
-
 	}
 }

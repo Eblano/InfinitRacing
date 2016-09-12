@@ -3,7 +3,8 @@ using System.Collections;
 
 [RequireComponent (typeof (NetworkView))]
 
-public class NetworkConnection : MonoBehaviour {
+public class NetworkConnection : MonoBehaviour 
+{
 	
 	public string connectToIP = "127.0.0.1";
 	public int connectPort = 9000;
@@ -29,9 +30,8 @@ public class NetworkConnection : MonoBehaviour {
 	[HideInInspector]
 	public bool tryingToConnect;
 	
-	void Start () {
-		
-		
+	void Start () 
+    {	
 		playerName = UtilsC.CreateRandomString(5);
 		DontDestroyOnLoad(this);
 		networkView.group = 1;
@@ -39,12 +39,14 @@ public class NetworkConnection : MonoBehaviour {
 	}
 	
 
-	void Update(){
+	void Update()
+    {
 		if(UtilsC.CheckPeerType(NetworkPeerType.Disconnected) && UtilsC.IsHostsExists())
 			hostData = MasterServer.PollHostList();
 	}
 	
-	public void StartServer(string levelName){
+	public void StartServer(string levelName)
+    {
 		foreach (GameObject go in MonoBehaviour.FindObjectsOfType(typeof (GameObject)))
 			go.SendMessage("OnTryingToStartServer",connectPort, SendMessageOptions.DontRequireReceiver);
 		Network.InitializeSecurity();
@@ -59,29 +61,34 @@ public class NetworkConnection : MonoBehaviour {
 		networkView.RPC("LoadMap", RPCMode.AllBuffered, levelName, lastLevelPrefix + 1);
 	}
 	
-	public void Connect(){
+	public void Connect()
+    {
 		foreach (GameObject go in MonoBehaviour.FindObjectsOfType(typeof (GameObject)))
 			go.SendMessage("OnTryingToConnect", SendMessageOptions.DontRequireReceiver);
 		Network.Connect(connectToIP, connectPort, password);
 	}
 	
-	public void RefreshServerList(){
+	public void RefreshServerList()
+    {
 		MasterServer.ClearHostList();
         MasterServer.RequestHostList(gameType);
 	}
 
-	public void Kick(NetworkPlayer player, bool sendDisconnectionNotification){
+	public void Kick(NetworkPlayer player, bool sendDisconnectionNotification)
+    {
 		Network.CloseConnection(player, sendDisconnectionNotification);
 	}
 	
-	public void Disconnect(int timeout){
+	public void Disconnect(int timeout)
+    {
 		Network.Disconnect(timeout);
 		if(UtilsC.CheckPeerType(NetworkPeerType.Server))
 			MasterServer.UnregisterHost();
 	}
 	
 	[RPC]
-	void AddPlayerToList(NetworkPlayer player, string username){
+	void AddPlayerToList(NetworkPlayer player, string username)
+    {
 		PlayerInfo newPlayerInfo = new PlayerInfo();
 		newPlayerInfo.player = player;
 		newPlayerInfo.username = username;
@@ -90,60 +97,73 @@ public class NetworkConnection : MonoBehaviour {
 	}
 	
 	[RPC]
-	void RemovePlayerFromList(NetworkPlayer player){
-		foreach (PlayerInfo playerInstance in playerList) {
+	void RemovePlayerFromList(NetworkPlayer player)
+    {
+		foreach (PlayerInfo playerInstance in playerList) 
+        {
 			if (player == playerInstance.player) 		
 				playerList.Remove(playerInstance);
 		}
 	}
 	
-	void OnConnectedToServer() {
+	void OnConnectedToServer() 
+    {
 		tryingToConnect = false;
 	}
 
-	void OnDisconnectedFromServer(NetworkDisconnection info) {
+	void OnDisconnectedFromServer(NetworkDisconnection info) 
+    {
 		Application.LoadLevel(sceneOnDisconnect);
 	}
 	
-	void OnTryingToStartServer(int port){
+	void OnTryingToStartServer(int port)
+    {
 	
 	}
 	
-	void OnTryingToConnect(){
+	void OnTryingToConnect()
+    {
 		tryingToConnect = true;
 	}
 	
-	void OnFailedToConnect(NetworkConnectionError error){
+	void OnFailedToConnect(NetworkConnectionError error)
+    {
 		tryingToConnect = false;
 	}
 	
-	void OnPlayerConnected(NetworkPlayer player) {
+	void OnPlayerConnected(NetworkPlayer player) 
+    {
 		Debug.Log("Player connected from: " + player.ipAddress +":" + player.port);
 	}
 	
-	void OnServerInitialized() {
+	void OnServerInitialized() 
+    {
 		Debug.Log("Server initialized and ready");
 	}
 	
-	void OnPlayerDisconnected(NetworkPlayer player) {
+	void OnPlayerDisconnected(NetworkPlayer player) 
+    {
 		Debug.Log("Player disconnected from: " + player.ipAddress+":" + player.port);
 	//	networkView.RPC("RemovePlayerFromList", RPCMode.All, player);
 		Network.RemoveRPCs(player);
 		Network.DestroyPlayerObjects(player);
 	}
 	
-	void OnNetworkLoadedLevel(){
+	void OnNetworkLoadedLevel()
+    {
 		playerList  = new ArrayList();
 		playerName = PlayerPrefs.GetString("playerName");
 		networkView.RPC("AddPlayerToList",RPCMode.AllBuffered, Network.player, playerName);
 	}
 	
-	void OnFailedToConnectToMasterServer(NetworkConnectionError info) {
+	void OnFailedToConnectToMasterServer(NetworkConnectionError info) 
+    {
         Debug.Log("Could not connect to master server: " + info);
     }
 	
 	[RPC]
-	IEnumerator LoadMap (string _levelName, int _levelPrefix){
+	IEnumerator LoadMap (string _levelName, int _levelPrefix)
+    {
 		Debug.Log("Loading level " + _levelName + " with prefix " + _levelPrefix);
 		lastLevelPrefix = _levelPrefix;
 		
@@ -154,7 +174,8 @@ public class NetworkConnection : MonoBehaviour {
 			
 		AsyncOperation asyncOp = Application.LoadLevelAsync(_levelName);
       		    
-		while (!asyncOp.isDone){
+		while (!asyncOp.isDone)
+        {
 			Debug.Log("Loading: " + asyncOp.progress.ToString());
 			yield return null;
 		}

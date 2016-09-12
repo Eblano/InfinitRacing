@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections;
 
-public class PlyerInit : MonoBehaviour {
+public class PlyerInit : MonoBehaviour 
+{
 
 
-	void Start () {
+	void Start () 
+    {
 		if(networkView.isMine)
 			gameObject.name = "Local Player";
 		else
