@@ -103,6 +103,8 @@ public class CarController : MonoBehaviour
 			rigidbody.centerOfMass = centerOfMass.localPosition;
 		rigidbody.inertiaTensor *= inertiaFactor;
 		drivetrain = GetComponent (typeof (Drivetrain)) as Drivetrain;
+
+        UIManager.GetInst().MainPlayerCarCtrl = this;
 	}
 	
 	void Update () 

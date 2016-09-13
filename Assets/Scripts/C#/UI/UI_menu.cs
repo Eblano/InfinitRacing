@@ -62,39 +62,40 @@ public class UI_menu : MonoBehaviour
 	
 	void OnGUI ()
     {		
-		GUI.skin = guiskin;
-		GUILayout.Label("Connection status: " + Network.peerType.ToString());
+        //GUI.skin = guiskin;
+        //GUILayout.Label("Connection status: " + Network.peerType.ToString());
 		if (UtilsC.CheckPeerType(NetworkPeerType.Disconnected))
         {
-			switch (menuState)
-            {
-                // 选择赛车
-				case "setavatarstyle":SetAvatarStyle();
-		 			break;
-                // 显示主菜单
-		   		case "menublock":MenuBlock();
-		 			break;
-                // 建立比赛房间
-		    	case "hostgame":HostGame();
-		       		break;
-                // 进入比赛房间
-				case "findgame":FindGame();
-		       		break;
-//				case "offlinegame":OfflineGameSettings();
-//		       		break;
-                // 设置玩家名称
-				case "setname":SetPlayerName();
-		       		break;
-                // 消息出错
-				case "networkerror":MSG_Error();
-		       		break;
-                // 尝试重连
-				case "tryingtoconnect":MSG_TryingToConnect();
-		       		break;
-                // 设置玩家名称
-				default:SetPlayerName();
-		     		break;
-			}			
+            //UIManager.GetInst().SetPanelShow(menuState);
+            //switch (menuState)
+            //{
+            //    // 选择赛车
+            //    case "setavatarstyle": SetAvatarStyle();
+            //        break;
+            //    // 显示主菜单
+            //    case "menublock": MenuBlock();
+            //        break;
+            //    // 建立比赛房间
+            //    case "hostgame": HostGame();
+            //        break;
+            //    // 进入比赛房间
+            //    case "findgame": FindGame();
+            //        break;
+            //    //				case "offlinegame":OfflineGameSettings();
+            //    //		       		break;
+            //    // 设置玩家名称
+            //    case "setname": SetPlayerName();
+            //        break;
+            //    // 消息出错
+            //    case "networkerror": MSG_Error();
+            //        break;
+            //    // 尝试重连
+            //    case "tryingtoconnect": MSG_TryingToConnect();
+            //        break;
+            //    // 设置玩家名称
+            //    default: SetPlayerName();
+            //        break;
+            //}			
 		}
 		DrawCursor();	
 	}
@@ -123,32 +124,32 @@ public class UI_menu : MonoBehaviour
     // 设置玩家名称
 	void SetPlayerName()
     {
-		GUILayout.BeginArea(new Rect(Screen.width / 2 - 85, Screen.height / 2 - 50, 200, 200));
-			GUI.Box(new Rect(0,40,200,80), "", GUI.skin.FindStyle("Box"));
-			GUILayout.Label("Player Name", GUI.skin.FindStyle("Lable"));
-			GUILayout.BeginHorizontal();
-			GUILayout.Space(10);
-			networkConnection.playerName = GUILayout.TextField(networkConnection.playerName, 20,GUILayout.MinWidth(180), GUILayout.MaxWidth(250));
-			GUILayout.Space(15);
-			GUILayout.EndHorizontal();			
-			
-			if(UtilsC.IsStringCorrect(networkConnection.playerName))
-            {			 
-				GUILayout.BeginHorizontal();
-				GUILayout.Space(50);
-			    if(GUILayout.Button ("Exit",GUI.skin.FindStyle("Button"), GUILayout.MaxWidth(100)))
-					Application.Quit();
-				if (GUILayout.Button("OK", GUI.skin.FindStyle("Button"), GUILayout.MaxWidth(100)))
-                {
-					PlayerPrefs.SetString("playerName", networkConnection.playerName);
-					menuState = "setavatarstyle";
-				}
-				GUILayout.Space(50);
-				GUILayout.EndHorizontal();			
-			}
-			else
-				GUI.Label(new Rect(12 ,90,185,30),"Enter your player name!"); 		
-			GUILayout.EndArea();
+        GUILayout.BeginArea(new Rect(Screen.width / 2 - 85, Screen.height / 2 - 50, 200, 200));
+        GUI.Box(new Rect(0, 40, 200, 80), "", GUI.skin.FindStyle("Box"));
+        GUILayout.Label("Player Name", GUI.skin.FindStyle("Lable"));
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(10);
+        networkConnection.playerName = GUILayout.TextField(networkConnection.playerName, 20, GUILayout.MinWidth(180), GUILayout.MaxWidth(250));
+        GUILayout.Space(15);
+        GUILayout.EndHorizontal();
+
+        if (UtilsC.IsStringCorrect(networkConnection.playerName))
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(50);
+            if (GUILayout.Button("Exit", GUI.skin.FindStyle("Button"), GUILayout.MaxWidth(100)))
+                Application.Quit();
+            if (GUILayout.Button("OK", GUI.skin.FindStyle("Button"), GUILayout.MaxWidth(100)))
+            {
+                PlayerPrefs.SetString("playerName", networkConnection.playerName);
+                menuState = "setavatarstyle";
+            }
+            GUILayout.Space(50);
+            GUILayout.EndHorizontal();
+        }
+        else
+            GUI.Label(new Rect(12, 90, 185, 30), "Enter your player name!");
+        GUILayout.EndArea();
 	}
 	
     // 选择赛车

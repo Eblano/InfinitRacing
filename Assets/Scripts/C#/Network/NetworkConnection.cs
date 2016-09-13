@@ -16,6 +16,7 @@ public class NetworkConnection : MonoBehaviour
 	public string serverName = "Test server";
 	public string playerName = "Player"; 
 	public string ColorName = "White";
+    public Color CarColor = Color.white;
 	public string serverDescription = "Welcome Everybody!";
 	public int maxConnections = 30;
 	public bool usePassword;

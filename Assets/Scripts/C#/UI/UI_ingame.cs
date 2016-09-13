@@ -12,11 +12,46 @@ public class UI_ingame : MonoBehaviour
 	
 	bool onPause = false;
 	Vector2 scrollPosition;
-	
-	
+
+    public bool isPause
+    {
+        get { return onPause; }
+    }
+
+    public void TogglePauseChange()
+    {
+        onPause = !onPause;
+        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
+            go.SendMessage("OnPauseStateChange", onPause, SendMessageOptions.DontRequireReceiver);	
+
+    }
+
+    public void OnQuit()
+    {
+        if (UtilsC.CheckPeerType(NetworkPeerType.Client))
+        {
+            networkConnection.Disconnect(200);
+        }
+
+        if (UtilsC.CheckPeerType(NetworkPeerType.Server))
+        {
+            networkConnection.Disconnect(200);
+
+            if (Network.connections.Length > 0)
+            {
+                for (int i = 0; i < Network.connections.Length; i++)
+                {
+                    networkConnection.Kick(Network.connections[i], true);
+                }
+            }
+
+        }
+
+    }
 	
 	void Start () 
     {
+        UIManager.GetInst().InGameUI = this;
 		//Screen.showCursor = false;
 		if(GameObject.Find("Network"))
 			networkConnection = GameObject.Find("Network").GetComponent<NetworkConnection>();
@@ -29,25 +64,23 @@ public class UI_ingame : MonoBehaviour
     {
 		if(Input.GetKeyDown(KeyCode.Escape))
         {
-			onPause = !onPause;
-			foreach (GameObject go in FindObjectsOfType(typeof (GameObject)))
-				go.SendMessage("OnPauseStateChange", onPause, SendMessageOptions.DontRequireReceiver);	
+            TogglePauseChange();
 		}
 	}	
 	
 	void OnGUI()
     {
-		GUI.skin = guiskin;
-		GUILayout.Label("Connection status: " + Network.peerType.ToString());
-		GUILayout.Label("Press ESC to "+ (onPause ? "hide" : "show").ToString() + " menu");
+        //GUI.skin = guiskin;
+        //GUILayout.Label("Connection status: " + Network.peerType.ToString());
+        //GUILayout.Label("Press ESC to "+ (onPause ? "hide" : "show").ToString() + " menu");
 		
-		if(Input.GetKey(KeyCode.Tab))
-			UserBoard();
-		if(onPause)
-        {
-			InGameMenu();
-			DrawCursor();
-		}
+        //if(Input.GetKey(KeyCode.Tab))
+        //    UserBoard();
+        //if(onPause)
+        //{
+        //    InGameMenu();
+        //    DrawCursor();
+        //}
 	}
 	
 	void DrawCursor()
