@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
-public class NetworkRigidbody : MonoBehaviour {
+public class NetworkRigidbody : MonoBehaviour 
+{
 	
 	public double m_InterpolationBackTime = 0.1;
 	public double m_ExtrapolationLimit = 0.5;
@@ -80,7 +81,8 @@ public class NetworkRigidbody : MonoBehaviour {
 	// We have a window of interpolationBackTime where we basically play 
 	// By having interpolationBackTime the average ping, you will usually use interpolation.
 	// And only if no more data arrives we will use extra polation
-	void Update () {
+	void Update () 
+    {
 		// This is the target playback time of the rigid body
 		double interpolationTime = Network.time - m_InterpolationBackTime;
 		

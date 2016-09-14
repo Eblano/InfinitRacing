@@ -61,43 +61,45 @@ public class UI_menu : MonoBehaviour
 	}
 	
 	void OnGUI ()
-    {		
-        //GUI.skin = guiskin;
-        //GUILayout.Label("Connection status: " + Network.peerType.ToString());
-		if (UtilsC.CheckPeerType(NetworkPeerType.Disconnected))
+    {
+        if (UIManager.C_USE_NEW_UI == false)
         {
-            //UIManager.GetInst().SetPanelShow(menuState);
-            //switch (menuState)
-            //{
-            //    // 选择赛车
-            //    case "setavatarstyle": SetAvatarStyle();
-            //        break;
-            //    // 显示主菜单
-            //    case "menublock": MenuBlock();
-            //        break;
-            //    // 建立比赛房间
-            //    case "hostgame": HostGame();
-            //        break;
-            //    // 进入比赛房间
-            //    case "findgame": FindGame();
-            //        break;
-            //    //				case "offlinegame":OfflineGameSettings();
-            //    //		       		break;
-            //    // 设置玩家名称
-            //    case "setname": SetPlayerName();
-            //        break;
-            //    // 消息出错
-            //    case "networkerror": MSG_Error();
-            //        break;
-            //    // 尝试重连
-            //    case "tryingtoconnect": MSG_TryingToConnect();
-            //        break;
-            //    // 设置玩家名称
-            //    default: SetPlayerName();
-            //        break;
-            //}			
-		}
-		DrawCursor();	
+            GUI.skin = guiskin;
+            GUILayout.Label("Connection status: " + Network.peerType.ToString());
+            if (UtilsC.CheckPeerType(NetworkPeerType.Disconnected))
+            {
+                switch (menuState)
+                {
+                    // 选择赛车
+                    case "setavatarstyle": SetAvatarStyle();
+                        break;
+                    // 显示主菜单
+                    case "menublock": MenuBlock();
+                        break;
+                    // 建立比赛房间
+                    case "hostgame": HostGame();
+                        break;
+                    // 进入比赛房间
+                    case "findgame": FindGame();
+                        break;
+                    //				case "offlinegame":OfflineGameSettings();
+                    //		       		break;
+                    // 设置玩家名称
+                    case "setname": SetPlayerName();
+                        break;
+                    // 消息出错
+                    case "networkerror": MSG_Error();
+                        break;
+                    // 尝试重连
+                    case "tryingtoconnect": MSG_TryingToConnect();
+                        break;
+                    // 设置玩家名称
+                    default: SetPlayerName();
+                        break;
+                }
+            }
+            DrawCursor();	
+        }
 	}
 	
 	void DrawCursor()

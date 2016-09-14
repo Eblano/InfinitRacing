@@ -236,31 +236,34 @@ public class CarController : MonoBehaviour
 	// Debug GUI. Disable when not needed.
 	void OnGUI ()
     {
-        Drivetrain gear;
-        gear = gameObject.GetComponent("Drivetrain") as Drivetrain;
-		
-		GUI.skin = mySkin;
-		var style1 = mySkin.customStyles[0];
-		var speed = rigidbody.velocity.magnitude * 3.6f;
-        GUI.Box(new Rect(0, Screen.height - 120, 140, 55), "", GUI.skin.FindStyle("Box"));
-        GUI.Label(new Rect(100, Screen.height - 50, 100, 400), "" + speed.ToString("F0"), style1);
-        GUI.Label(new Rect(40, Screen.height - 50, 100, 400), "KM/H : ");
-        tractionControl = GUI.Toggle(new Rect(80, Screen.height - 70, 30, 20), tractionControl, "TC");
-        gear.automatic = GUI.Toggle(new Rect(120, Screen.height - 70, 30, 20), gear.automatic, "T/A");
+        if (UIManager.C_USE_NEW_UI == false)
+        {
+            Drivetrain gear;
+            gear = gameObject.GetComponent("Drivetrain") as Drivetrain;
 
-        if (carCamCtrl == null)
-        {
-            GameObject go = GameObject.Find("Car Camera");
-            if (go != null)
-                carCamCtrl = go.GetComponent<CarCameraController>();
-        }
-        if (carCamCtrl != null)
-        {
-            bool val = GUI.Toggle(new Rect(160, Screen.height - 70, 30, 20), carCamCtrl.useThirdCamera, "Cam");
-            if (val != carCamCtrl.useThirdCamera)
+            GUI.skin = mySkin;
+            var style1 = mySkin.customStyles[0];
+            var speed = rigidbody.velocity.magnitude * 3.6f;
+            GUI.Box(new Rect(0, Screen.height - 120, 140, 55), "", GUI.skin.FindStyle("Box"));
+            GUI.Label(new Rect(100, Screen.height - 50, 100, 400), "" + speed.ToString("F0"), style1);
+            GUI.Label(new Rect(40, Screen.height - 50, 100, 400), "KM/H : ");
+            tractionControl = GUI.Toggle(new Rect(80, Screen.height - 70, 30, 20), tractionControl, "TC");
+            gear.automatic = GUI.Toggle(new Rect(120, Screen.height - 70, 30, 20), gear.automatic, "T/A");
+
+            if (carCamCtrl == null)
             {
-                carCamCtrl.useThirdCamera = val;
-                carCamCtrl.ApplyCameraSetting();
+                GameObject go = GameObject.Find("Car Camera");
+                if (go != null)
+                    carCamCtrl = go.GetComponent<CarCameraController>();
+            }
+            if (carCamCtrl != null)
+            {
+                bool val = GUI.Toggle(new Rect(160, Screen.height - 70, 30, 20), carCamCtrl.useThirdCamera, "Cam");
+                if (val != carCamCtrl.useThirdCamera)
+                {
+                    carCamCtrl.useThirdCamera = val;
+                    carCamCtrl.ApplyCameraSetting();
+                }
             }
         }
 	}

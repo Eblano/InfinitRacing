@@ -54,6 +54,7 @@ public class NetworkSpawnerC : MonoBehaviour
         }
     }
 
+    // ´´½¨ÍøÂçÍæ¼Ò
 	void SpawnNetworkActor(Transform networkActor,Transform[] spawnPoints)
     {
 		int spIndex= Random.Range(0, spawnPoints.Length);

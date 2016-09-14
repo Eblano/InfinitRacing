@@ -74,6 +74,7 @@ public class UtilsC
             Network.SetReceivingEnabled(player, nw_group, state);
 	}
 	
+    // 根据标记找最近的对象
 	public static GameObject FindClosestObjectWithTag(string tag, Vector3 toPosition)
     {
 	 	GameObject closestObject = null; 

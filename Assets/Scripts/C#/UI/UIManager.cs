@@ -3,6 +3,8 @@ using System.Collections;
 
 public class UIManager : MonoBehaviour 
 {
+    public const bool C_USE_NEW_UI = false;
+
     CarController mainPlayerCarCtrl = null;
     public CarController MainPlayerCarCtrl
     {
@@ -37,7 +39,14 @@ public class UIManager : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
-	
+        if (C_USE_NEW_UI)
+        {
+            SetPanelShow("setname");
+        }
+        else
+        {
+            SetPanelShow("");
+        }
 	}
 	
 	// Update is called once per frame
@@ -92,7 +101,7 @@ public class UIManager : MonoBehaviour
                 break;
             // 设置玩家名称
             default:
-                mPanelSetPlayerName.gameObject.SetActive(true);
+                //mPanelSetPlayerName.gameObject.SetActive(true);
                 break;
         }	
     }

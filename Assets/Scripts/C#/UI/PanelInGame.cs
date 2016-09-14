@@ -17,7 +17,10 @@ public class PanelInGame : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-	
+        if (UIManager.GetInst().MainPlayerCarCtrl != null)
+            speedText.text = (UIManager.GetInst().MainPlayerCarCtrl.rigidbody.velocity.magnitude * 3.6f).ToString();
+        else
+            speedText.text = "0";
 	}
 
     public void OnBtnCamClicked()

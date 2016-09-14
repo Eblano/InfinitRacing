@@ -42,10 +42,12 @@ public class NetworkConnection : MonoBehaviour
 
 	void Update()
     {
+        // 当本客户端没有连接并且有主机地址存在的时候，拉取服务器列表
 		if(UtilsC.CheckPeerType(NetworkPeerType.Disconnected) && UtilsC.IsHostsExists())
 			hostData = MasterServer.PollHostList();
 	}
 	
+    // 启动服务器
 	public void StartServer(string levelName)
     {
 		foreach (GameObject go in MonoBehaviour.FindObjectsOfType(typeof (GameObject)))
@@ -54,7 +56,9 @@ public class NetworkConnection : MonoBehaviour
 		if(usePassword)
 			Network.incomingPassword = password;
 			
+        // 初始化服务器
 		Network.InitializeServer(maxConnections, connectPort, !Network.HavePublicAddress());
+        // 注册主机
 		MasterServer.RegisterHost(gameType, serverName, serverDescription);
 		
 		Network.RemoveRPCsInGroup(0);
@@ -62,6 +66,7 @@ public class NetworkConnection : MonoBehaviour
 		networkView.RPC("LoadMap", RPCMode.AllBuffered, levelName, lastLevelPrefix + 1);
 	}
 	
+    // 连接到主机
 	public void Connect()
     {
 		foreach (GameObject go in MonoBehaviour.FindObjectsOfType(typeof (GameObject)))
@@ -69,17 +74,20 @@ public class NetworkConnection : MonoBehaviour
 		Network.Connect(connectToIP, connectPort, password);
 	}
 	
+    // 刷新服务器列表
 	public void RefreshServerList()
     {
 		MasterServer.ClearHostList();
         MasterServer.RequestHostList(gameType);
 	}
 
+    // 踢掉玩家
 	public void Kick(NetworkPlayer player, bool sendDisconnectionNotification)
     {
 		Network.CloseConnection(player, sendDisconnectionNotification);
 	}
 	
+    // 断掉连接
 	public void Disconnect(int timeout)
     {
 		Network.Disconnect(timeout);
@@ -87,6 +95,7 @@ public class NetworkConnection : MonoBehaviour
 			MasterServer.UnregisterHost();
 	}
 	
+    // 添加玩家
 	[RPC]
 	void AddPlayerToList(NetworkPlayer player, string username)
     {
@@ -97,6 +106,7 @@ public class NetworkConnection : MonoBehaviour
 		Debug.Log("Add Palyer: " + username);
 	}
 	
+    // 删除玩家
 	[RPC]
 	void RemovePlayerFromList(NetworkPlayer player)
     {
@@ -107,11 +117,13 @@ public class NetworkConnection : MonoBehaviour
 		}
 	}
 	
+    // 连接到服务器的回调
 	void OnConnectedToServer() 
     {
 		tryingToConnect = false;
 	}
 
+    // 断开连接的回调
 	void OnDisconnectedFromServer(NetworkDisconnection info) 
     {
 		Application.LoadLevel(sceneOnDisconnect);
@@ -122,26 +134,31 @@ public class NetworkConnection : MonoBehaviour
 	
 	}
 	
+    // 尝试连接
 	void OnTryingToConnect()
     {
 		tryingToConnect = true;
 	}
 	
+    // 连接失败
 	void OnFailedToConnect(NetworkConnectionError error)
     {
 		tryingToConnect = false;
 	}
 	
+    // 有玩家连接进来
 	void OnPlayerConnected(NetworkPlayer player) 
     {
 		Debug.Log("Player connected from: " + player.ipAddress +":" + player.port);
 	}
 	
+    // 服务器初始化完成
 	void OnServerInitialized() 
     {
 		Debug.Log("Server initialized and ready");
 	}
 	
+    // 有玩家掉线
 	void OnPlayerDisconnected(NetworkPlayer player) 
     {
 		Debug.Log("Player disconnected from: " + player.ipAddress+":" + player.port);
@@ -150,6 +167,7 @@ public class NetworkConnection : MonoBehaviour
 		Network.DestroyPlayerObjects(player);
 	}
 	
+    // 赛道地图加载完成
 	void OnNetworkLoadedLevel()
     {
 		playerList  = new ArrayList();
@@ -157,22 +175,26 @@ public class NetworkConnection : MonoBehaviour
 		networkView.RPC("AddPlayerToList",RPCMode.AllBuffered, Network.player, playerName);
 	}
 	
+    // 连接到主服务器失败
 	void OnFailedToConnectToMasterServer(NetworkConnectionError info) 
     {
         Debug.Log("Could not connect to master server: " + info);
     }
 	
+    // 加载赛道地图
 	[RPC]
 	IEnumerator LoadMap (string _levelName, int _levelPrefix)
     {
 		Debug.Log("Loading level " + _levelName + " with prefix " + _levelPrefix);
 		lastLevelPrefix = _levelPrefix;
 		
+        // 暂停网络处理
 		Network.SetSendingEnabled(0, false);	
 		//UtilsC.SetReceivingEnabled(0, false);
 		Network.isMessageQueueRunning = false;
 		Network.SetLevelPrefix(_levelPrefix);
 			
+        // 异步加载场景
 		AsyncOperation asyncOp = Application.LoadLevelAsync(_levelName);
       		    
 		while (!asyncOp.isDone)
@@ -181,6 +203,7 @@ public class NetworkConnection : MonoBehaviour
 			yield return null;
 		}
 			 
+        // 恢复网络处理
 		Debug.Log("Loading complete");
 		//UtilsC.SetReceivingEnabled(0, true);
 		Network.isMessageQueueRunning = true;
@@ -191,7 +214,8 @@ public class NetworkConnection : MonoBehaviour
 	}
 	
 	[ContextMenu ("Set Game ID")]
-	void SetGameID(){
+	void SetGameID()
+    {
 		gameType = UtilsC.CreateRandomString(30);
 	}
 }

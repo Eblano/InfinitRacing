@@ -70,17 +70,20 @@ public class UI_ingame : MonoBehaviour
 	
 	void OnGUI()
     {
-        //GUI.skin = guiskin;
-        //GUILayout.Label("Connection status: " + Network.peerType.ToString());
-        //GUILayout.Label("Press ESC to "+ (onPause ? "hide" : "show").ToString() + " menu");
-		
-        //if(Input.GetKey(KeyCode.Tab))
-        //    UserBoard();
-        //if(onPause)
-        //{
-        //    InGameMenu();
-        //    DrawCursor();
-        //}
+        if (UIManager.C_USE_NEW_UI == false)
+        {
+            GUI.skin = guiskin;
+            GUILayout.Label("Connection status: " + Network.peerType.ToString());
+            GUILayout.Label("Press ESC to " + (onPause ? "hide" : "show").ToString() + " menu");
+
+            if (Input.GetKey(KeyCode.Tab))
+                UserBoard();
+            if (onPause)
+            {
+                InGameMenu();
+                DrawCursor();
+            }
+        }
 	}
 	
 	void DrawCursor()
