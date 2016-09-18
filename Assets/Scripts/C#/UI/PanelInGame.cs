@@ -5,6 +5,7 @@ using System.Collections;
 public class PanelInGame : MonoBehaviour 
 {
     public Text speedText;
+    public Text gearText;
 
     CarCameraController carCamCtrl;
 
@@ -17,20 +18,28 @@ public class PanelInGame : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        if (UIManager.GetInst().MainPlayerCarCtrl != null)
-            speedText.text = (UIManager.GetInst().MainPlayerCarCtrl.rigidbody.velocity.magnitude * 3.6f).ToString();
-        else
-            speedText.text = "0";
-	}
-
-    public void OnBtnCamClicked()
-    {
         if (carCamCtrl == null)
         {
             GameObject go = GameObject.Find("Car Camera");
             if (go != null)
                 carCamCtrl = go.GetComponent<CarCameraController>();
         }
+
+        if (UIManager.GetInst().MainPlayerCarCtrl != null)
+        {
+            int speed = (int)(UIManager.GetInst().MainPlayerCarCtrl.rigidbody.velocity.magnitude * 3.6f);
+            speedText.text = speed.ToString() + " kmh";
+            gearText.text = "[" + UIManager.GetInst().MainPlayerCarCtrl.CurGear.ToString() + "]";
+        }
+        else
+        {
+            speedText.text = "0 kmh";
+            gearText.text = "[1]";
+        }
+	}
+
+    public void OnBtnCamClicked()
+    {
         if (carCamCtrl != null)
             carCamCtrl.ToggleCamera();
     }
@@ -40,7 +49,7 @@ public class PanelInGame : MonoBehaviour
         UIManager.GetInst().InGameUI.TogglePauseChange();
     }
 
-    public void OnBtnStopServerClicked()
+    public void OnBtnExitClicked()
     {
         UIManager.GetInst().InGameUI.OnQuit();
         UIManager.GetInst().SetPanelShow("setname");

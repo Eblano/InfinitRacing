@@ -90,8 +90,9 @@ public class NetworkConnection : MonoBehaviour
     // 断掉连接
 	public void Disconnect(int timeout)
     {
+        bool isServer = UtilsC.CheckPeerType(NetworkPeerType.Server);
 		Network.Disconnect(timeout);
-		if(UtilsC.CheckPeerType(NetworkPeerType.Server))
+        if (isServer)
 			MasterServer.UnregisterHost();
 	}
 	
@@ -121,6 +122,8 @@ public class NetworkConnection : MonoBehaviour
 	void OnConnectedToServer() 
     {
 		tryingToConnect = false;
+
+        //UIManager.GetInst().SetPanelShow("ingame");
 	}
 
     // 断开连接的回调
@@ -138,12 +141,16 @@ public class NetworkConnection : MonoBehaviour
 	void OnTryingToConnect()
     {
 		tryingToConnect = true;
+
+        UIManager.GetInst().ShowMsgBox("", @"Connecting server, please wait ...", PanelMessageBox.BtnStatus.BS_None, null, null);
 	}
 	
     // 连接失败
 	void OnFailedToConnect(NetworkConnectionError error)
     {
 		tryingToConnect = false;
+
+        UIManager.GetInst().ShowMsgBox("Warning", "Connect to server failed!", PanelMessageBox.BtnStatus.BS_OK, null, null);
 	}
 	
     // 有玩家连接进来
@@ -185,6 +192,9 @@ public class NetworkConnection : MonoBehaviour
 	[RPC]
 	IEnumerator LoadMap (string _levelName, int _levelPrefix)
     {
+        UIManager.GetInst().ShowLoadingMap(true);
+        UIManager.GetInst().RefreshLoadingProgress(0.0f);
+
 		Debug.Log("Loading level " + _levelName + " with prefix " + _levelPrefix);
 		lastLevelPrefix = _levelPrefix;
 		
@@ -195,13 +205,20 @@ public class NetworkConnection : MonoBehaviour
 		Network.SetLevelPrefix(_levelPrefix);
 			
         // 异步加载场景
-		AsyncOperation asyncOp = Application.LoadLevelAsync(_levelName);
+        AsyncOperation asyncOp = Application.LoadLevelAsync(_levelName);
+        //AsyncOperation asyncOp = Application.LoadLevelAdditiveAsync(_levelName);
       		    
 		while (!asyncOp.isDone)
         {
 			Debug.Log("Loading: " + asyncOp.progress.ToString());
+            UIManager.GetInst().RefreshLoadingProgress(asyncOp.progress);
+            System.Threading.Thread.Sleep(1000);
 			yield return null;
 		}
+
+        UIManager.GetInst().RefreshLoadingProgress(1.0f);
+        System.Threading.Thread.Sleep(1000);
+        yield return null;
 			 
         // 恢复网络处理
 		Debug.Log("Loading complete");
@@ -211,6 +228,8 @@ public class NetworkConnection : MonoBehaviour
 		
 		foreach (GameObject go in MonoBehaviour.FindObjectsOfType(typeof (GameObject)))
 			go.SendMessage("OnNetworkLoadedLevel", SendMessageOptions.DontRequireReceiver);
+
+        UIManager.GetInst().EnterGame();
 	}
 	
 	[ContextMenu ("Set Game ID")]

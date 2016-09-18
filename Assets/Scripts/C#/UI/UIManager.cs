@@ -3,7 +3,7 @@ using System.Collections;
 
 public class UIManager : MonoBehaviour 
 {
-    public const bool C_USE_NEW_UI = false;
+    public const bool C_USE_NEW_UI = true;
 
     CarController mainPlayerCarCtrl = null;
     public CarController MainPlayerCarCtrl
@@ -20,10 +20,13 @@ public class UIManager : MonoBehaviour
     }
 
     public PanelCreateRoom mPanelCreateRoom;
+    public PanelEnterRoom mPanelEnterRoom;
     public PanelInGame mPanelInGame;
     public PanelMainMenu mPanelMainMenu;
     public PanelSelectCar mPanelSelectCar;
     public PanelSetPlayerName mPanelSetPlayerName;
+    public PanelMessageBox mPanelMessageBox;
+    public PanelLoadingMap mPanelLoadingMap;
 
     static UIManager sInst = null; 
     public static UIManager GetInst()
@@ -55,9 +58,34 @@ public class UIManager : MonoBehaviour
 	
 	}
 
+    public void ShowMsgBox(string title, string msg, PanelMessageBox.BtnStatus bs, PanelMessageBox.OnOK _okFunc, PanelMessageBox.OnCancel _cancelFunc)
+    {
+        if (C_USE_NEW_UI )
+            mPanelMessageBox.OnShow(title, msg, bs, _okFunc, _cancelFunc);
+    }
+
+    public void ShowLoadingMap(bool show)
+    {
+        if (C_USE_NEW_UI)
+            mPanelLoadingMap.gameObject.SetActive(show);
+    }
+
+    public void RefreshLoadingProgress(float progress)
+    {
+        mPanelLoadingMap.RefreshProgress(progress);
+    }
+
+    public void EnterGame()
+    {
+        mPanelLoadingMap.EnterGame();
+    }
+
     public void SetPanelShow(string menuState)
     {
+        if (C_USE_NEW_UI == false)
+            return;
         mPanelCreateRoom.gameObject.SetActive(false);
+        mPanelEnterRoom.gameObject.SetActive(false);
         mPanelInGame.gameObject.SetActive(false);
         mPanelMainMenu.gameObject.SetActive(false);
         mPanelSelectCar.gameObject.SetActive(false);
@@ -74,31 +102,47 @@ public class UIManager : MonoBehaviour
                 }
             // 显示主菜单
             case "menublock":
-                mPanelMainMenu.gameObject.SetActive(true);
-                break;
+                {
+                    mPanelMainMenu.gameObject.SetActive(true);
+                    break;
+                }
             // 建立比赛房间
             case "hostgame":
-                mPanelCreateRoom.gameObject.SetActive(true);
-                break;
+                {
+                    mPanelCreateRoom.gameObject.SetActive(true);
+                    break;
+                }
             // 进入比赛房间
-            case "findgame": 
-                //FindGame();
-                break;
+            case "findgame":
+                {
+                    mPanelEnterRoom.gameObject.SetActive(true);
+                    mPanelEnterRoom.OnShow();
+                    //FindGame();
+                    break;
+                }
             // 设置玩家名称
             case "setname":
-                mPanelSetPlayerName.gameObject.SetActive(true);
-                break;
+                {
+                    mPanelSetPlayerName.gameObject.SetActive(true);
+                    break;
+                }
             // 消息出错
-            case "networkerror": 
-                //MSG_Error();
-                break;
+            case "networkerror":
+                {
+                    //MSG_Error();
+                    break;
+                }
             // 尝试重连
-            case "tryingtoconnect": 
-                //MSG_TryingToConnect();
-                break;
+            case "tryingtoconnect":
+                {
+                    //MSG_TryingToConnect();
+                    break;
+                }
             case "ingame":
-                mPanelInGame.gameObject.SetActive(true);
-                break;
+                {
+                    mPanelInGame.gameObject.SetActive(true);
+                    break;
+                }
             // 设置玩家名称
             default:
                 //mPanelSetPlayerName.gameObject.SetActive(true);

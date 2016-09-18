@@ -27,7 +27,7 @@ public class PanelSelectCar : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
-        Screen.showCursor = false;
+        //Screen.showCursor = false;
         if (GameObject.Find("Network"))
         {
             networkConnection = GameObject.Find("Network").GetComponent<NetworkConnection>();
@@ -87,5 +87,6 @@ public class PanelSelectCar : MonoBehaviour
         Netw.gameObject.tag = (loadAvatarInfo[AvatarIndex].TagName);
 
         UIManager.GetInst().SetPanelShow("menublock");
+        check = 0;
     }
 }

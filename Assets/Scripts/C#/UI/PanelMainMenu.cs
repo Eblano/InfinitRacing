@@ -31,6 +31,11 @@ public class PanelMainMenu : MonoBehaviour
         UIManager.GetInst().SetPanelShow("setname");	
     }
 
+    public void OnBtnSelectCarClicked()
+    {
+        UIManager.GetInst().SetPanelShow("setavatarstyle");	
+    }
+
     public void OnBtnExitClicked()
     {
         Application.Quit();		

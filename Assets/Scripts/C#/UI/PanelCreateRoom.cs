@@ -15,10 +15,12 @@ public class PanelCreateRoom : MonoBehaviour
     public InputField inputConntCount;
     public RawImage imgTrack;
 
+    bool needTriggerConnect = false;
+
 	// Use this for initialization
 	void Start () 
     {
-        Screen.showCursor = false;
+        //Screen.showCursor = false;
         if (GameObject.Find("Network"))
         {
             networkConnection = GameObject.Find("Network").GetComponent<NetworkConnection>();
@@ -37,6 +39,19 @@ public class PanelCreateRoom : MonoBehaviour
         inputConntCount.text = networkConnection.maxConnections.ToString();
 
         imgTrack.texture = loadLevelInfo[levelIndex].mapPreview;
+
+        if (needTriggerConnect)
+        {
+            this.gameObject.SetActive(false);
+            UIManager.GetInst().ShowLoadingMap(true);
+            UIManager.GetInst().RefreshLoadingProgress(0.0f);
+
+            //text_ = GameObject.Find("Loading text");
+            //text_.renderer.enabled = true;
+            networkConnection.StartServer(loadLevelInfo[levelIndex].sceneName);
+            //UIManager.GetInst().SetPanelShow("ingame");
+            needTriggerConnect = false;
+        }
 	}
 
     public void OnShow()
@@ -46,10 +61,7 @@ public class PanelCreateRoom : MonoBehaviour
 
     public void OnBtnStartServerClicked()
     {
-        text_ = GameObject.Find("Loading text");
-        text_.renderer.enabled = true;
-        networkConnection.StartServer(loadLevelInfo[levelIndex].sceneName);
-        UIManager.GetInst().SetPanelShow("ingame");
+        needTriggerConnect = true;
     }
 
     public void OnBtnBackToMenuClicked()

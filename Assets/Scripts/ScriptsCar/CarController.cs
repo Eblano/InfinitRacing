@@ -96,6 +96,11 @@ public class CarController : MonoBehaviour
 
     CarCameraController carCamCtrl = null;
 
+    public int CurGear
+    {
+        get { return drivetrain.gear; }
+    }
+
 	// Initialize
 	void Start () 
 	{

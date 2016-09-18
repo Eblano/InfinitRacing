@@ -50,7 +50,7 @@ public class UI_menu : MonoBehaviour
 
 	void Start () 
     {		
-		Screen.showCursor = false;
+        //Screen.showCursor = false;
 		if(GameObject.Find("Network"))
         {
 			networkConnection = GameObject.Find("Network").GetComponent<NetworkConnection>();
