@@ -5,7 +5,7 @@ using System.Collections;
 
 public class NetworkConnection : MonoBehaviour 
 {
-	
+    public bool ForceUseNat = true;
 	public string connectToIP = "127.0.0.1";
 	public int connectPort = 9000;
 	
@@ -57,7 +57,8 @@ public class NetworkConnection : MonoBehaviour
 			Network.incomingPassword = password;
 			
         // 初始化服务器
-		Network.InitializeServer(maxConnections, connectPort, !Network.HavePublicAddress());
+        bool useNat = !ForceUseNat ? !Network.HavePublicAddress() : true;
+        Network.InitializeServer(maxConnections, connectPort, useNat);
         // 注册主机
 		MasterServer.RegisterHost(gameType, serverName, serverDescription);
 		
@@ -123,6 +124,7 @@ public class NetworkConnection : MonoBehaviour
     {
 		tryingToConnect = false;
 
+        UIManager.GetInst().HideMsgBox();
         //UIManager.GetInst().SetPanelShow("ingame");
 	}
 
@@ -142,7 +144,7 @@ public class NetworkConnection : MonoBehaviour
     {
 		tryingToConnect = true;
 
-        UIManager.GetInst().ShowMsgBox("", @"Connecting server, please wait ...", PanelMessageBox.BtnStatus.BS_None, null, null);
+        UIManager.GetInst().ShowMsgBox("", @"Connecting server, please wait ...", PanelMessageBox.BtnStatus.BS_OK, null, null);
 	}
 	
     // 连接失败
@@ -178,7 +180,7 @@ public class NetworkConnection : MonoBehaviour
 	void OnNetworkLoadedLevel()
     {
 		playerList  = new ArrayList();
-		playerName = PlayerPrefs.GetString("playerName");
+        //playerName = PlayerPrefs.GetString("playerName");
 		networkView.RPC("AddPlayerToList",RPCMode.AllBuffered, Network.player, playerName);
 	}
 	

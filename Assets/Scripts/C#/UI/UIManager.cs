@@ -64,6 +64,12 @@ public class UIManager : MonoBehaviour
             mPanelMessageBox.OnShow(title, msg, bs, _okFunc, _cancelFunc);
     }
 
+    public void HideMsgBox()
+    {
+        if (C_USE_NEW_UI)
+            mPanelMessageBox.gameObject.SetActive(false);
+    }
+
     public void ShowLoadingMap(bool show)
     {
         if (C_USE_NEW_UI)
