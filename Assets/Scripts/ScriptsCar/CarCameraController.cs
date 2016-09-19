@@ -212,6 +212,7 @@ public class CarCameraController : MonoBehaviour
     void SetTarget(Transform t)
     {
         target = t;
+        ApplyCameraSetting();
     }
 
 

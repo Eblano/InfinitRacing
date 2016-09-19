@@ -38,6 +38,9 @@ public class PanelEnterRoom : MonoBehaviour
         {
             networkConnection = GameObject.Find("Network").GetComponent<NetworkConnection>();
             networkConnection.RefreshServerList();
+
+            inputIP.text = networkConnection.connectToIP;
+            inputPort.text = networkConnection.connectPort.ToString();
         }
         else
             Debug.Log("There are no object with name Network");
