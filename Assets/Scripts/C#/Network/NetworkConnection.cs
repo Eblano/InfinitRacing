@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent (typeof (NetworkView))]
 
@@ -27,12 +28,24 @@ public class NetworkConnection : MonoBehaviour
 	
 	public HostData[] hostData;
 	public ArrayList playerList = new ArrayList();
+
+    public Dictionary<NetworkPlayer, CarNetworkInitWrapper> playerObjMap = new Dictionary<NetworkPlayer, CarNetworkInitWrapper>();
 	
 	[HideInInspector]
 	public bool tryingToConnect;
+
+    static NetworkConnection sInst = null;
+    public static NetworkConnection GetInst()
+    {
+        return sInst;
+    }
 	
 	void Start () 
-    {	
+    {
+        if (sInst != null)
+            throw new System.Exception("there is NetworkConnection exist!!!!");
+
+        sInst = this;
 		playerName = UtilsC.CreateRandomString(5);
 		DontDestroyOnLoad(this);
 		networkView.group = 1;
@@ -117,6 +130,7 @@ public class NetworkConnection : MonoBehaviour
 			if (player == playerInstance.player) 		
 				playerList.Remove(playerInstance);
 		}
+        playerObjMap.Remove(player);
 	}
 	
     // 连接到服务器的回调

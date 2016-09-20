@@ -34,11 +34,10 @@ public class PanelEnterRoom : MonoBehaviour
         iniWidth = serverListViewTrans.rect.width;
         iniHeight = serverListViewTrans.rect.height;
         //Screen.showCursor = false;
-        if (GameObject.Find("Network"))
-        {
-            networkConnection = GameObject.Find("Network").GetComponent<NetworkConnection>();
+        networkConnection = NetworkConnection.GetInst();
+        if (networkConnection != null)
+        {            
             networkConnection.RefreshServerList();
-
             inputIP.text = networkConnection.connectToIP;
             inputPort.text = networkConnection.connectPort.ToString();
         }

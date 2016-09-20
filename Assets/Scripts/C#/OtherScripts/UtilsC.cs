@@ -2,7 +2,8 @@
 using UnityEngine;
 using System.Collections;
 
-public enum MotionStates{
+public enum MotionStates
+{
 	On_Pause,
 	Idle,
 	Run,

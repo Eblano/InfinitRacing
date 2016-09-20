@@ -11,14 +11,11 @@ public class ColoChangeMenu : MonoBehaviour
 	
     void Update () 
     {
-
-        if (GameObject.Find("Network"))
-        {
-            networkConnection = GameObject.Find("Network").GetComponent<NetworkConnection>();
+        networkConnection = NetworkConnection.GetInst();
+        if (networkConnection != null)
+        {  
             InputColorChange();
         }
-	
-
     }
 	
 

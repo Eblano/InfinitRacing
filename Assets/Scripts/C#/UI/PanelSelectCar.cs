@@ -28,9 +28,9 @@ public class PanelSelectCar : MonoBehaviour
 	void Start () 
     {
         //Screen.showCursor = false;
-        if (GameObject.Find("Network"))
-        {
-            networkConnection = GameObject.Find("Network").GetComponent<NetworkConnection>();
+        networkConnection = NetworkConnection.GetInst();
+        if (networkConnection != null)
+        {  
             networkConnection.RefreshServerList();
         }
         else

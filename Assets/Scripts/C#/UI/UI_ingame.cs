@@ -12,6 +12,7 @@ public class UI_ingame : MonoBehaviour
 	
 	bool onPause = false;
 	Vector2 scrollPosition;
+    float lastTimeScale = 1.0f;
 
     public bool isPause
     {
@@ -20,10 +21,15 @@ public class UI_ingame : MonoBehaviour
 
     public void TogglePauseChange()
     {
+        if (onPause == false)
+            lastTimeScale = Time.timeScale;
         onPause = !onPause;
+        if (onPause)
+            Time.timeScale = 0.0f;
+        else
+            Time.timeScale = lastTimeScale;
         foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
             go.SendMessage("OnPauseStateChange", onPause, SendMessageOptions.DontRequireReceiver);	
-
     }
 
     public void OnQuit()
@@ -53,9 +59,8 @@ public class UI_ingame : MonoBehaviour
     {
         UIManager.GetInst().InGameUI = this;
 		//Screen.showCursor = false;
-		if(GameObject.Find("Network"))
-			networkConnection = GameObject.Find("Network").GetComponent<NetworkConnection>();
-		else
+        networkConnection = NetworkConnection.GetInst();
+        if (networkConnection == null)
 			Debug.Log("There are no object with name Network");
 	}
 	

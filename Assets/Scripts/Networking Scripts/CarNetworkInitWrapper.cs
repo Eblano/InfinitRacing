@@ -3,6 +3,7 @@ using System.Collections;
 
 public class CarNetworkInitWrapper : MonoBehaviour 
 {
+    public NetworkPlayer netPlayer;
 
 	// Use this for initialization
 	void Start () 
@@ -18,6 +19,8 @@ public class CarNetworkInitWrapper : MonoBehaviour
 
     void OnNetworkInstantiate(NetworkMessageInfo msg) 
     {
+        netPlayer = msg.sender;
+
 	    // This is our own player
 	    if (networkView.isMine)
 	    {
@@ -39,5 +42,18 @@ public class CarNetworkInitWrapper : MonoBehaviour
                 cam.enabled = false;
             Camera.main.SendMessage("ApplyCameraSetting");
 	    }
+    }
+
+    [RPC]
+    public void ResetPlayerTransformS2C(NetworkPlayer player, Transform cpTrans)
+    {
+        // 当玩家匹配的时候才执行transform重置
+        if (player == Network.player && netPlayer == player)
+        {
+            transform.position = cpTrans.position;
+            transform.rotation = cpTrans.rotation;
+            transform.rigidbody.velocity = new Vector3(0, 0, 0);
+            transform.rigidbody.angularVelocity = new Vector3(0, 0, 0);
+        }
     }
 }

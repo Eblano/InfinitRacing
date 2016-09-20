@@ -20,10 +20,10 @@ public class PanelCreateRoom : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
+        networkConnection = NetworkConnection.GetInst();
         //Screen.showCursor = false;
-        if (GameObject.Find("Network"))
-        {
-            networkConnection = GameObject.Find("Network").GetComponent<NetworkConnection>();
+        if (networkConnection)
+        {            
             networkConnection.RefreshServerList();
         }
         else

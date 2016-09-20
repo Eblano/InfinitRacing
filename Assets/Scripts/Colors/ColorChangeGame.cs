@@ -11,14 +11,11 @@ public class ColorChangeGame : MonoBehaviour
 	
     void Update () 
     {
-		
-	    if(GameObject.Find("Network") && name == "Local Player")
+        networkConnection = NetworkConnection.GetInst();
+        if(networkConnection != null && name == "Local Player")
         {
-		    networkConnection = GameObject.Find("Network").GetComponent<NetworkConnection>();
 		    InputColorChange();
 	    }
-	
-
     }
 	
 
