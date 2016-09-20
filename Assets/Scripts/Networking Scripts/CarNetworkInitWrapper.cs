@@ -19,7 +19,9 @@ public class CarNetworkInitWrapper : MonoBehaviour
 
     void OnNetworkInstantiate(NetworkMessageInfo msg) 
     {
-        netPlayer = msg.sender;
+        //netPlayer = msg.sender;
+        netPlayer = networkView.owner;
+        NetworkConnection.GetInst().playerObjMap.Add(netPlayer, this);
 
 	    // This is our own player
 	    if (networkView.isMine)
@@ -45,13 +47,13 @@ public class CarNetworkInitWrapper : MonoBehaviour
     }
 
     [RPC]
-    public void ResetPlayerTransformS2C(NetworkPlayer player, Transform cpTrans)
+    public void ResetPlayerTransformS2C(NetworkPlayer player, Vector3 pos, Quaternion rot)
     {
         // 当玩家匹配的时候才执行transform重置
         if (player == Network.player && netPlayer == player)
         {
-            transform.position = cpTrans.position;
-            transform.rotation = cpTrans.rotation;
+            transform.position = pos;
+            transform.rotation = rot;
             transform.rigidbody.velocity = new Vector3(0, 0, 0);
             transform.rigidbody.angularVelocity = new Vector3(0, 0, 0);
         }

@@ -7,7 +7,12 @@ public class PanelInGame : MonoBehaviour
     public Text speedText;
     public Text gearText;
 
+    public Text rankingText;
+    public Text lapText;
+    public Text bestLapTimeText;
+
     CarCameraController carCamCtrl;
+    public LapCollector lapCollector;
 
 	// Use this for initialization
 	void Start () 
@@ -35,6 +40,45 @@ public class PanelInGame : MonoBehaviour
         {
             speedText.text = "0 kmh";
             gearText.text = "[1]";
+        }
+
+        lapText.text = "";
+        rankingText.text = "";
+        bestLapTimeText.text = "";
+
+        if (lapCollector != null)
+        {
+            float bestLapTime = -1.0f;
+            SinglePlayerLapInfo pi = lapCollector.GetLocalPlayerLapInfo(ref bestLapTime);
+            if (pi != null)
+            {
+                if (lapCollector.maxLap <= 0)
+                    lapText.text = "Lap " + (pi.mLapIndex + 1).ToString();
+                else
+                    lapText.text = "Lap " + (pi.mLapIndex + 1).ToString() + " / " + lapCollector.maxLap.ToString();
+
+                float lapTime = Time.realtimeSinceStartup - pi.mStartTimeStamp;
+                if( lapTime < 60.0f )
+                    rankingText.text = lapTime.ToString("#0.00");
+                else if (lapTime < 3600.0f)
+                {
+                    int m = (int)lapTime / 60;
+                    float s = lapTime - m * 60.0f;
+                    rankingText.text = m.ToString() + ":" + s.ToString("#0.00");
+                }
+
+                if (bestLapTime > 0.0f)
+                {
+                    if (bestLapTime < 60.0f)
+                        bestLapTimeText.text = bestLapTime.ToString("#0.00");
+                    else if (bestLapTime < 3600.0f)
+                    {
+                        int m = (int)bestLapTime / 60;
+                        float s = bestLapTime - m * 60.0f;
+                        bestLapTimeText.text = m.ToString() + ":" + s.ToString("#0.00");
+                    }
+                }
+            }
         }
 	}
 

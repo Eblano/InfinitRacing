@@ -58,9 +58,9 @@ public class NetworkSpawnerC : MonoBehaviour
 	void SpawnNetworkActor(Transform networkActor,Transform[] spawnPoints)
     {
 		int spIndex= Random.Range(0, spawnPoints.Length);
-		GameObject playerObject = Network.Instantiate(networkActor, spawnPoints[spIndex].position, spawnPoints[spIndex].rotation, 0) as GameObject;
-        CarNetworkInitWrapper comp = playerObject.GetComponent<CarNetworkInitWrapper>();
-        NetworkConnection.GetInst().playerObjMap.Add(comp.netPlayer, comp);
+        Transform playerObject = Network.Instantiate(networkActor, spawnPoints[spIndex].position, spawnPoints[spIndex].rotation, 0) as Transform;
+        //CarNetworkInitWrapper comp = playerObject.GetComponent<CarNetworkInitWrapper>();
+        //NetworkConnection.GetInst().playerObjMap.Add(comp.netPlayer, comp);
 	}
 
 }
