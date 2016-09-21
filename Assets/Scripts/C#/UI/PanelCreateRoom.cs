@@ -17,17 +17,20 @@ public class PanelCreateRoom : MonoBehaviour
 
     bool needTriggerConnect = false;
 
-	// Use this for initialization
-	void Start () 
+    void Init()
     {
         networkConnection = NetworkConnection.GetInst();
         //Screen.showCursor = false;
         if (networkConnection)
-        {            
             networkConnection.RefreshServerList();
-        }
         else
             Debug.Log("There are no object with name Network");
+    }
+
+	// Use this for initialization
+	void Start () 
+    {
+        Init();
 	}
 	
 	// Update is called once per frame
@@ -51,6 +54,7 @@ public class PanelCreateRoom : MonoBehaviour
 
     public void OnShow()
     {
+        Init();
         inputPort.text = networkConnection.connectPort.ToString();
         inputServerName.text = networkConnection.serverName;
         inputDesc.text = networkConnection.serverDescription;
