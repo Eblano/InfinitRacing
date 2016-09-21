@@ -19,6 +19,8 @@ public class PanelSetPlayerName : MonoBehaviour
         }
         else
             Debug.Log("There are no object with name Network");
+
+        playerName.text = networkConnection.playerName;
 	}
 	
 	// Update is called once per frame
@@ -33,6 +35,7 @@ public class PanelSetPlayerName : MonoBehaviour
         if (UtilsC.IsStringCorrect(networkConnection.playerName))
         {
             PlayerPrefs.SetString("playerName", networkConnection.playerName);
+            PlayerPrefs.Save();
             UIManager.GetInst().SetPanelShow("setavatarstyle");
         }
     }

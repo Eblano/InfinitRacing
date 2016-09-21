@@ -33,11 +33,6 @@ public class PanelCreateRoom : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        inputPort.text = networkConnection.connectPort.ToString();
-        inputServerName.text = networkConnection.serverName;
-        inputDesc.text = networkConnection.serverDescription;
-        inputConntCount.text = networkConnection.maxConnections.ToString();
-
         imgTrack.texture = loadLevelInfo[levelIndex].mapPreview;
 
         if (needTriggerConnect)
@@ -56,7 +51,10 @@ public class PanelCreateRoom : MonoBehaviour
 
     public void OnShow()
     {
-
+        inputPort.text = networkConnection.connectPort.ToString();
+        inputServerName.text = networkConnection.serverName;
+        inputDesc.text = networkConnection.serverDescription;
+        inputConntCount.text = networkConnection.maxConnections.ToString();
     }
 
     public void OnBtnStartServerClicked()

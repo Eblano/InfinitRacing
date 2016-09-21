@@ -116,6 +116,7 @@ public class UIManager : MonoBehaviour
             case "hostgame":
                 {
                     mPanelCreateRoom.gameObject.SetActive(true);
+                    mPanelCreateRoom.OnShow();
                     break;
                 }
             // 进入比赛房间

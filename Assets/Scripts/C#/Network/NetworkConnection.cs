@@ -46,7 +46,11 @@ public class NetworkConnection : MonoBehaviour
             throw new System.Exception("there is NetworkConnection exist!!!!");
 
         sInst = this;
-		playerName = UtilsC.CreateRandomString(5);
+        //playerName = UtilsC.CreateRandomString(5);
+        if (PlayerPrefs.HasKey("playerName"))
+            playerName = PlayerPrefs.GetString("playerName");
+        else
+            playerName = UtilsC.CreateRandomString(5);
 		DontDestroyOnLoad(this);
 		networkView.group = 1;
 		Application.LoadLevel(sceneOnDisconnect);
@@ -98,12 +102,16 @@ public class NetworkConnection : MonoBehaviour
     // ÌßµôÍæ¼Ò
 	public void Kick(NetworkPlayer player, bool sendDisconnectionNotification)
     {
+        if (playerObjMap.ContainsKey(player))
+            playerObjMap.Remove(player);
 		Network.CloseConnection(player, sendDisconnectionNotification);
 	}
 	
     // ¶ÏµôÁ¬½Ó
 	public void Disconnect(int timeout)
     {
+        if (playerObjMap.ContainsKey(Network.player))
+            playerObjMap.Remove(Network.player);
         bool isServer = UtilsC.CheckPeerType(NetworkPeerType.Server);
 		Network.Disconnect(timeout);
         if (isServer)

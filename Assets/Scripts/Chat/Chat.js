@@ -44,25 +44,25 @@ function FocusControl ()
 
 function OnGUI ()
 {
-	GUI.skin = skin;
-	
-	//if (GUILayout.Button(showChat ? "Hide Chat" : "Display Chat"))
-	if (GUI.Button(new Rect(Screen.width-100, Screen.height-30, 90, 20), showChat ? "Hide Chat" : "Display Chat"))
-	{
-		// Focus first element
-		if (showChat)
-		{	
-			CloseChatWindow ();
-		}
-		else
-		{
-			showChat = true;
-			FocusControl();
-		}
-	}
-	
-	if (showChat)
-		window = GUI.Window (1, window, GlobalChatWindow, "Chat");
+//	GUI.skin = skin;
+//	
+//	//if (GUILayout.Button(showChat ? "Hide Chat" : "Display Chat"))
+//	if (GUI.Button(new Rect(Screen.width-100, Screen.height-30, 90, 20), showChat ? "Hide Chat" : "Display Chat"))
+//	{
+//		// Focus first element
+//		if (showChat)
+//		{	
+//			CloseChatWindow ();
+//		}
+//		else
+//		{
+//			showChat = true;
+//			FocusControl();
+//		}
+//	}
+//	
+//	if (showChat)
+//		window = GUI.Window (1, window, GlobalChatWindow, "Chat");
 }
 
 function GlobalChatWindow (id : int) {
