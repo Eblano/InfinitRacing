@@ -23,6 +23,8 @@ public class PanelSelectCar : MonoBehaviour
 
     NetworkConnection networkConnection;
 
+    Object previewCar = null;
+
 
 	// Use this for initialization
 	void Start () 
@@ -40,6 +42,11 @@ public class PanelSelectCar : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
+        if (previewCar == null)
+        {
+            previewCar = Instantiate(loadAvatarInfo[AvatarIndex].AvatarPreview);
+        }
+
         previewColorImg.color = new Color(sliderR.value, sliderG.value, sliderB.value);
         networkConnection.CarColor = previewColorImg.color;
 	}
@@ -48,7 +55,7 @@ public class PanelSelectCar : MonoBehaviour
     {
         if (check == 0)
         {
-            Instantiate(loadAvatarInfo[AvatarIndex].AvatarPreview);
+            previewCar = Instantiate(loadAvatarInfo[AvatarIndex].AvatarPreview);
             check = 1;
         }
     }
@@ -61,7 +68,7 @@ public class PanelSelectCar : MonoBehaviour
             AvatarIndex = loadAvatarInfo.Length - 1;
         else
             AvatarIndex--;
-        Instantiate(loadAvatarInfo[AvatarIndex].AvatarPreview);
+        previewCar = Instantiate(loadAvatarInfo[AvatarIndex].AvatarPreview);
     }
 
     public void OnNextBtnClicked()
@@ -73,7 +80,7 @@ public class PanelSelectCar : MonoBehaviour
             AvatarIndex = 0;
         else
             AvatarIndex++;
-        Instantiate(loadAvatarInfo[AvatarIndex].AvatarPreview);
+        previewCar = Instantiate(loadAvatarInfo[AvatarIndex].AvatarPreview);
     }
 
     public void OnOKBtnClicked()
@@ -88,5 +95,6 @@ public class PanelSelectCar : MonoBehaviour
 
         UIManager.GetInst().SetPanelShow("menublock");
         check = 0;
+        previewCar = null;
     }
 }

@@ -96,6 +96,21 @@ public class PanelInGame : MonoBehaviour
     public void OnBtnExitClicked()
     {
         UIManager.GetInst().InGameUI.OnQuit();
-        UIManager.GetInst().SetPanelShow("setname");
+        //UIManager.GetInst().SetPanelShow("setname");
+        //UIManager.GetInst().SetPanelShow("setavatarstyle");
+    }
+
+    public void OnBtnResetClicked()
+    {
+        if (UIManager.GetInst().MainPlayerCarCtrl != null)
+        {
+            CarNetworkInitWrapper car = UIManager.GetInst().MainPlayerCarCtrl.GetComponent<CarNetworkInitWrapper>();
+            if (car != null)
+            {
+                Quaternion q = new Quaternion();
+                q.SetLookRotation(car.transform.forward, Vector3.up);
+                car.networkView.RPC("ResetPlayerTransformS2C", RPCMode.AllBuffered, car.netPlayer, car.transform.position, q);
+            }
+        }
     }
 }

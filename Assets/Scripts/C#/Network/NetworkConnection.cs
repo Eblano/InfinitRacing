@@ -154,6 +154,7 @@ public class NetworkConnection : MonoBehaviour
 	void OnDisconnectedFromServer(NetworkDisconnection info) 
     {
 		Application.LoadLevel(sceneOnDisconnect);
+        UIManager.GetInst().SetPanelShow("setavatarstyle");
 	}
 	
 	void OnTryingToStartServer(int port)
