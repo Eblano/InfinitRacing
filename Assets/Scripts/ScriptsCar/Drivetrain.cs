@@ -8,6 +8,12 @@ using System.Collections;
 // 这个类主要是模拟车辆发动机以及传动装置,生成扭矩并作用到车轮上
 public class Drivetrain : MonoBehaviour 
 {
+    public float NitroForce = 1000.0f;
+    public float NitroContainerMax = 50.0f;
+    public float NitroReleaseRate = 10.0f;
+    public float NitroInjectRate = 5.0f;
+    public bool isUsingNitro = false;
+    public float curNitroContainer = 50.0f;
 	
 	// All the wheels the drivetrain should power
 	public Wheel[] poweredWheels;
@@ -154,7 +160,7 @@ public class Drivetrain : MonoBehaviour
 			engineAngularVelo += engineAngularAcceleration * Time.deltaTime;
 
             // Apply torque to car body
-            rigidbody.AddTorque(-engineOrientation * engineTorque);
+            //rigidbody.AddTorque(-engineOrientation * engineTorque);
 		}
 		else
 		{
@@ -178,6 +184,25 @@ public class Drivetrain : MonoBehaviour
 			// update engine angular velo
             // 发动机的角速度 = 车轮平均角速度 * 最终的传动齿轮比
 			engineAngularVelo = averageAngularVelo * ratio;
+
+            if (isUsingNitro)
+            {
+                if (curNitroContainer > 0.0f)
+                {
+                    curNitroContainer -= NitroReleaseRate * Time.fixedDeltaTime;
+                    if (curNitroContainer < 0.0f)
+                        curNitroContainer = 0.0f;
+                    Vector3 velocityDir = transform.forward;
+                    velocityDir.Normalize();
+                    this.rigidbody.AddForceAtPosition(NitroForce * velocityDir, this.transform.position);
+                }
+            }
+            else if (curNitroContainer < NitroContainerMax)
+            {
+                curNitroContainer += NitroInjectRate * Time.fixedDeltaTime;
+                if (curNitroContainer > NitroContainerMax)
+                    curNitroContainer = NitroContainerMax;
+            }
 		}
 		
 		// update state
@@ -210,6 +235,12 @@ public class Drivetrain : MonoBehaviour
             //    ShiftDown ();
             if (throttleInput < 0 && rpm <= minRPM)
                 gear = (gear == 0?2:0);
+
+            // 控制倒车的时的转速
+            if (gear == 0 && throttle > 0.0f)
+            {
+                rpm = minRPM + throttle * minRPM;
+            }
 		}
 	}
 		
@@ -224,6 +255,45 @@ public class Drivetrain : MonoBehaviour
 		if (gear > 0)
 			gear --;
 	}
+
+    //void OnCollisionEnter(Collision collisionInfo)
+    //{
+    //    Vector3 velocity = this.rigidbody.velocity;
+    //    float length = velocity.magnitude;
+    //    velocity.Normalize();
+    //    Vector3 finalV = Vector3.zero;
+    //    float force = 10000.0f;
+    //    for (int i = 0; i < collisionInfo.contacts.Length; ++i)
+    //    {
+    //        ContactPoint cp = collisionInfo.contacts[i];
+    //        float dot = Vector3.Dot(cp.normal, Vector3.up);
+    //        if (Mathf.Abs(dot) < 0.001f)
+    //        {
+    //            Vector3 l = Vector3.Cross(velocity, cp.normal);
+    //            Vector3 u = Vector3.Cross(cp.normal, l);
+    //            l.Normalize();
+    //            u.Normalize();
+    //            Vector3 vu = Vector3.Dot(velocity, u) * length * u;
+    //            Vector3 vl = Vector3.Dot(velocity, l) * length * l;
+    //            finalV = vu + vl;
+    //            //this.rigidbody.AddForceAtPosition(cp.normal * force, cp.point);
+    //            //Vector3 lp = this.transform.InverseTransformPoint(cp.point);
+    //            this.rigidbody.AddForceAtPosition(cp.normal * force, this.transform.position);
+    //        }
+    //        Debug.DrawRay(cp.point, cp.normal * 10.0f, Color.white);
+    //    }
+    //    this.rigidbody.velocity = finalV;
+    //}
+
+    //void OnCollisionStay(Collision collisionInfo)
+    //{
+    //    for (int i = 0; i < collisionInfo.contacts.Length; ++i)
+    //    {
+    //        ContactPoint cp = collisionInfo.contacts[i];
+    //        Debug.DrawRay(cp.point, cp.normal * 10.0f, Color.white);
+    //    }
+    //}
+
 	
 	// Debug GUI. Disable when not needed.
 	//void OnGUI () {

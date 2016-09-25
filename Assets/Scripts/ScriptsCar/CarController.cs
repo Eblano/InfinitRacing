@@ -55,6 +55,7 @@ public class CarController : MonoBehaviour
 	// How long it takes to fully engage the throttle 
 	// when the wheels are spinning (and traction control is disabled)
 	public float throttleTimeTraction = 10.0f;
+    public float throttleTimeNoneTraction = 5.0f;
 	// How long it takes to fully release the throttle
 	public float throttleReleaseTime = 0.5f;
 	// How long it takes to fully release the throttle 
@@ -115,7 +116,7 @@ public class CarController : MonoBehaviour
 	void Update () 
 	{
 		
-		// Steering
+		// 解决车轮转向
 		Vector3 carDir = transform.forward;
 		float fVelo = rigidbody.velocity.magnitude;
 		Vector3 veloDir = rigidbody.velocity * (1/fVelo);
@@ -125,9 +126,9 @@ public class CarController : MonoBehaviour
 			optimalSteering = 0;	
 		
 		float steerInput = 0;
-		if (Input.GetKey (KeyCode.LeftArrow))
+        if( InputManager.GetInst().triggerSteeringLeft )
 			steerInput = -1;
-		if (Input.GetKey (KeyCode.RightArrow))
+        if (InputManager.GetInst().triggerSteeringRight)
 			steerInput = 1;
 
         // 车轮左转
@@ -153,28 +154,30 @@ public class CarController : MonoBehaviour
 		
 		// Throttle/Brake
 
-		bool accelKey = Input.GetKey (KeyCode.UpArrow);
-		bool brakeKey = Input.GetKey (KeyCode.DownArrow);
+        bool accelKey = InputManager.GetInst().triggerThrottle;
+        bool brakeKey = InputManager.GetInst().triggerBreak;
+
 		
 		if (drivetrain.automatic && drivetrain.gear == 0)
 		{
-			accelKey = Input.GetKey (KeyCode.DownArrow);
-			brakeKey = Input.GetKey (KeyCode.UpArrow);
+            accelKey = InputManager.GetInst().triggerBreak;
+            brakeKey = InputManager.GetInst().triggerThrottle;
 		}
 		
-		if (Input.GetKey (KeyCode.LeftShift))
+        //if (Input.GetKey (KeyCode.LeftShift))
+        //{
+        //    throttle += Time.deltaTime / throttleTime;
+        //    throttleInput += Time.deltaTime / throttleTime;
+        //}
+        //else 
+        if (accelKey)
 		{
-			throttle += Time.deltaTime / throttleTime;
-			throttleInput += Time.deltaTime / throttleTime;
-		}
-        else if (accelKey)
-		{
-			if (drivetrain.slipRatio < 0.10f)
-				throttle += Time.deltaTime / throttleTime;
-			else if (!tractionControl)
-				throttle += Time.deltaTime / throttleTimeTraction;
-			else
-				throttle -= Time.deltaTime / throttleReleaseTime;
+            if (drivetrain.slipRatio < 0.10f)
+                throttle += Time.deltaTime / throttleTime;
+            else if (!tractionControl)
+                throttle += Time.deltaTime / throttleTimeTraction;
+            else
+                throttle -= Time.deltaTime / throttleReleaseTime;
 
 			if (throttleInput < 0)
 				throttleInput = 0;
@@ -210,19 +213,19 @@ public class CarController : MonoBehaviour
 		throttleInput = Mathf.Clamp (throttleInput, -1, 1);
 				
 		// Handbrake
-		handbrake = Mathf.Clamp01 ( handbrake + (Input.GetKey (KeyCode.Space)? Time.deltaTime: -Time.deltaTime) );
+        handbrake = Mathf.Clamp01(handbrake + (InputManager.GetInst().triggerHandBreak ? Time.deltaTime : -Time.deltaTime));
 		
 		// Gear shifting
 		float shiftThrottleFactor = Mathf.Clamp01((Time.time - lastShiftTime)/shiftSpeed);
 		drivetrain.throttle = throttle * shiftThrottleFactor;
 		drivetrain.throttleInput = throttleInput;
 		
-		if(Input.GetKeyDown(KeyCode.A))
+        if( InputManager.GetInst().triggerShiftUp )
 		{
 			lastShiftTime = Time.time;
 			drivetrain.ShiftUp ();
 		}
-		if(Input.GetKeyDown(KeyCode.Z))
+        if (InputManager.GetInst().triggerShiftDown)
 		{
 			lastShiftTime = Time.time;
 			drivetrain.ShiftDown ();
@@ -235,6 +238,11 @@ public class CarController : MonoBehaviour
 			w.handbrake = handbrake;
 			w.steering = steering;
 		}
+
+        if (InputManager.GetInst().triggerNitro)
+            drivetrain.isUsingNitro = true;
+        else
+            drivetrain.isUsingNitro = false;
 	}
 
 	

@@ -11,6 +11,8 @@ public class PanelInGame : MonoBehaviour
     public Text lapText;
     public Text bestLapTimeText;
 
+    public RectTransform nitroTrans;
+
     CarCameraController carCamCtrl;
     public LapCollector lapCollector;
 
@@ -41,6 +43,15 @@ public class PanelInGame : MonoBehaviour
             speedText.text = "0 kmh";
             gearText.text = "[1]";
         }
+
+        float maxWidth = (nitroTrans.parent as RectTransform).rect.width;
+        if (UIManager.GetInst().MainPlayerCarCtrl != null)
+        {
+            Drivetrain dt = UIManager.GetInst().MainPlayerCarCtrl.GetComponent<Drivetrain>();
+            nitroTrans.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, dt.curNitroContainer / dt.NitroContainerMax * maxWidth);
+        }
+        else
+            nitroTrans.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, maxWidth);
 
         lapText.text = "";
         rankingText.text = "";
