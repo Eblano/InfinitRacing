@@ -14,29 +14,50 @@ public class InputManager : MonoBehaviour
         IT_Mobile,
     }
 
-    
 
-    InputDevice inputDevice = null;
+    InputSettingMobile inputMobile = null;
+    InputSettingPC inputPC = null;
+    InputDevice curInputDevice = null;
     InputType inputType = InputType.IT_PC;
     public InputType CurInputType
     {
         get { return inputType; }
         set
         {
-            inputDevice = null;
-            if (inputType == InputType.IT_PC)
+            if (inputPC == null)
             {
-                inputDevice = GetComponent<InputSettingPC>();
-                if( inputDevice == null )
-                    inputDevice = this.gameObject.AddComponent<InputSettingPC>();
+                inputPC = GetComponent<InputSettingPC>();
+                if (inputPC == null)
+                    inputPC = this.gameObject.AddComponent<InputSettingPC>();
             }
-            else if (inputType == InputType.IT_Mobile)
+            if (inputMobile == null)
             {
-                inputDevice = GetComponent<InputSettingMobile>();
-                if (inputDevice == null)
-                    inputDevice = this.gameObject.AddComponent<InputSettingMobile>();
+                inputMobile = GetComponent<InputSettingMobile>();
+                if (inputMobile == null)
+                    inputMobile = this.gameObject.AddComponent<InputSettingMobile>();
+            }
+
+            if (inputType == InputType.IT_Mobile)
+            {
+                curInputDevice = inputMobile;
+                inputMobile.enabled = true;
+                inputPC.enabled = false;
+            }
+            else if (inputType == InputType.IT_PC)
+            {
+                curInputDevice = inputPC;
+                inputMobile.enabled = false;
+                inputPC.enabled = true;
             }
         }
+    }
+    public InputSettingPC GetInputPC()
+    {
+        return inputPC;
+    }
+    public InputSettingMobile GetInputMobile()
+    {
+        return inputMobile;
     }
 
     public bool triggerSteeringLeft;
@@ -64,7 +85,7 @@ public class InputManager : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        if (inputDevice != null)
-            inputDevice.HandleInput();
+        if (curInputDevice != null)
+            curInputDevice.HandleInput();
 	}
 }

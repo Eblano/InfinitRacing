@@ -27,6 +27,7 @@ public class UIManager : MonoBehaviour
     public PanelSetPlayerName mPanelSetPlayerName;
     public PanelMessageBox mPanelMessageBox;
     public PanelLoadingMap mPanelLoadingMap;
+    public PanelSettings mPanelSettings;
 
     static UIManager sInst = null; 
     public static UIManager GetInst()
@@ -86,6 +87,11 @@ public class UIManager : MonoBehaviour
         mPanelLoadingMap.EnterGame();
     }
 
+    public PanelSettings GetPanelSetting()
+    {
+        return mPanelSettings;
+    }
+
     public void SetPanelShow(string menuState)
     {
         if (C_USE_NEW_UI == false)
@@ -96,6 +102,7 @@ public class UIManager : MonoBehaviour
         mPanelMainMenu.gameObject.SetActive(false);
         mPanelSelectCar.gameObject.SetActive(false);
         mPanelSetPlayerName.gameObject.SetActive(false);
+        mPanelSettings.gameObject.SetActive(false);
 
         switch (menuState)
         {
@@ -110,6 +117,14 @@ public class UIManager : MonoBehaviour
             case "menublock":
                 {
                     mPanelMainMenu.gameObject.SetActive(true);
+                    mPanelMainMenu.OnShow();
+                    break;
+                }
+            // 设置界面
+            case "setting":
+                {
+                    mPanelSettings.gameObject.SetActive(true);
+                    mPanelSettings.OnShow();
                     break;
                 }
             // 建立比赛房间

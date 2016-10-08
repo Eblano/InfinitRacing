@@ -16,6 +16,11 @@ public class PanelMainMenu : MonoBehaviour
 	
 	}
 
+    public void OnShow()
+    {
+
+    }
+
     public void OnBtnCreateRoomClicked()
     {
         UIManager.GetInst().SetPanelShow("hostgame");
@@ -39,5 +44,11 @@ public class PanelMainMenu : MonoBehaviour
     public void OnBtnExitClicked()
     {
         Application.Quit();		
+    }
+
+    public void OnBtnSettingClicked()
+    {
+        UIManager.GetInst().GetPanelSetting().lastPanelTag = "menublock";
+        UIManager.GetInst().SetPanelShow("setting");
     }
 }
